@@ -1,0 +1,78 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Domain", "UserManagement.Domain\UserManagement.Domain.csproj", "{1A622EAF-DBD9-422C-827C-516901F37496}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Infrastructure", "UserManagement.Infrastructure\UserManagement.Infrastructure.csproj", "{6BC9327A-AF51-4CBF-B8A6-ABB977BC6670}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.API", "UserManagement.API\UserManagement.API.csproj", "{0AC13F87-0D76-455A-82EC-F4748C4E5562}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Tests", "UserManagement.Tests\UserManagement.Tests.csproj", "{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3029DC9-54FF-4DD6-BF4B-35439B2A0AF6}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "User.Registration.Service", "User.Registration.Service\User.Registration.Service.csproj", "{2B663087-6060-4767-ACD1-1B8664EBACF3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3364F6CC-7A1F-44CA-8CAD-2C667100062C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Login.Service", "Login.Service\Login.Service.csproj", "{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Management.Service", "Profile.Management.Service\Profile.Management.Service.csproj", "{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Service", "Mail.Service\Mail.Service.csproj", "{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Application", "UserManagement.Application\UserManagement.Application.csproj", "{D109F424-1F01-4FE8-8A2D-EE5647611C10}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1A622EAF-DBD9-422C-827C-516901F37496}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1A622EAF-DBD9-422C-827C-516901F37496}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1A622EAF-DBD9-422C-827C-516901F37496}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1A622EAF-DBD9-422C-827C-516901F37496}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6BC9327A-AF51-4CBF-B8A6-ABB977BC6670}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6BC9327A-AF51-4CBF-B8A6-ABB977BC6670}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6BC9327A-AF51-4CBF-B8A6-ABB977BC6670}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6BC9327A-AF51-4CBF-B8A6-ABB977BC6670}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0AC13F87-0D76-455A-82EC-F4748C4E5562}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0AC13F87-0D76-455A-82EC-F4748C4E5562}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0AC13F87-0D76-455A-82EC-F4748C4E5562}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0AC13F87-0D76-455A-82EC-F4748C4E5562}.Release|Any CPU.Build.0 = Release|Any CPU
+		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2B663087-6060-4767-ACD1-1B8664EBACF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2B663087-6060-4767-ACD1-1B8664EBACF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2B663087-6060-4767-ACD1-1B8664EBACF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2B663087-6060-4767-ACD1-1B8664EBACF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D109F424-1F01-4FE8-8A2D-EE5647611C10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D109F424-1F01-4FE8-8A2D-EE5647611C10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D109F424-1F01-4FE8-8A2D-EE5647611C10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D109F424-1F01-4FE8-8A2D-EE5647611C10}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3364F6CC-7A1F-44CA-8CAD-2C667100062C} = {B3029DC9-54FF-4DD6-BF4B-35439B2A0AF6}
+		{2B663087-6060-4767-ACD1-1B8664EBACF3} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
+		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
+		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
+		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
+	EndGlobalSection
+EndGlobal

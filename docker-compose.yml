@@ -1,0 +1,140 @@
+﻿services:
+  usermanagement.api:
+    image: usermanagement.api
+    build:
+      context: UserManagement.API
+      dockerfile: Dockerfile
+    ports:
+      - "5005:80"
+  
+  
+  mail-service.api:
+    image: mailservice
+    build:
+      context: Mail.Service
+      dockerfile: Dockerfile
+    ports:
+      - "5002:80"
+    depends_on:
+      - usermanagement-db
+  
+  profile-service.api:
+    image: profileservice
+    build:
+      context: Profile.Management.Service
+      dockerfile: Dockerfile
+    ports:
+      - "5003:80"
+    depends_on:
+      - usermanagement-db
+  
+  usermanagement-db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    environment:
+      SA_PASSWORD: "db+123456"
+      ACCEPT_EULA: "Y"
+    ports:
+      - "1433:1433"
+    volumes:
+      - user-db-data:/var/opt/mssql/data
+  
+  login-service.api:
+    image: loginservice
+    build:
+      context: Login.Service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - usermanagement-db
+  
+  userregistration.api:
+    image: userregistration
+    build:
+      context: User.Registration.Service
+      dockerfile: Dockerfile
+    ports:
+      - "5004:80"
+    depends_on:
+      - usermanagement-db
+  
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: 'rabbitmq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    
+    networks:
+      - rabbitmq_go_net
+    hostname: local-queue
+    command: [ "bash","-c","rabbitmq-server" ]
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=docker-cluster
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.15.0
+    container_name: kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+    ports:
+      - "5601:5601"
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.15.0
+    container_name: logstash
+    volumes:
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/pipeline:/usr/share/logstash/pipeline
+    environment:
+      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+    ports:
+      - "5000:5000"
+
+
+volumes:
+  user-db-data:
+  esdata:
+
+networks:
+  rabbitmq_go_net:
+    driver: bridge
+  
+  intranet:
+    name: "backend-intranet"
+    driver: "bridge"
+    driver_opts:
+      com.docker.network.bridge.name: "backend-intranet"
+    ipam:
+      driver: default
+      config:
+        - subnet: 175.15.25.0/16
+
+  public:
+    name: "publicnet"
+    driver: "bridge"
+    internal: true
+    driver_opts:
+      com.docker.network.bridge.name: "publicnet"
+    ipam:
+      driver: default
+      config:
+        - subnet: 175.17.25.0/16
