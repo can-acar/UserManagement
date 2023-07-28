@@ -16,7 +16,6 @@
         <PackageReference Include="MediatR" Version="12.1.1" />
         <PackageReference Include="MediatR.Extensions.FluentValidation" Version="0.6.0" />
         <PackageReference Include="MediatR.Extensions.FluentValidation.AspNetCore" Version="4.0.0" />
-        <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />
         <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjectionFixed" Version="5.1.2" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />

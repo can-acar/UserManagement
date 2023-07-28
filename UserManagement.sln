@@ -6,20 +6,14 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.API", "UserM
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Tests", "UserManagement.Tests\UserManagement.Tests.csproj", "{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B3029DC9-54FF-4DD6-BF4B-35439B2A0AF6}"
-	ProjectSection(SolutionItems) = preProject
-		docker-compose.yml = docker-compose.yml
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{3364F6CC-7A1F-44CA-8CAD-2C667100062C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Identity.Service", "Identity.Service\Identity.Service.csproj", "{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Profile.Management.Service", "Profile.Management.Service\Profile.Management.Service.csproj", "{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mail.Service", "Mail.Service\Mail.Service.csproj", "{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Core", "UserManagement.Core\UserManagement.Core.csproj", "{A04ADD9B-C9AB-4A18-B0B3-40BB4DFA0F30}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEC46016-2603-416C-BC61-9EC3C24023F5}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose.yml = docker-compose.yml
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,14 +33,6 @@ Global
 		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74A9CB60-8DAE-43F8-8E39-A3AA8B881FD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805}.Release|Any CPU.Build.0 = Release|Any CPU
-		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941}.Release|Any CPU.Build.0 = Release|Any CPU
 		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -57,9 +43,5 @@ Global
 		{A04ADD9B-C9AB-4A18-B0B3-40BB4DFA0F30}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
-		{3364F6CC-7A1F-44CA-8CAD-2C667100062C} = {B3029DC9-54FF-4DD6-BF4B-35439B2A0AF6}
-		{71FFDF74-3962-4E9C-BDDB-CC5EBD669805} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
-		{B22C0A07-38AB-4E72-AD2C-C08B21AD1941} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
-		{95B6CD69-743E-4AD9-8284-FA4EBC83C4F8} = {3364F6CC-7A1F-44CA-8CAD-2C667100062C}
 	EndGlobalSection
 EndGlobal
