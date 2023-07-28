@@ -1,0 +1,14 @@
+2023-07-28 18:27:10.342 +03:00 [DBG] Hosting starting
+2023-07-28 18:27:10.803 +03:00 [INF] Now listening on: https://localhost:7041
+2023-07-28 18:27:10.805 +03:00 [INF] Now listening on: http://localhost:5116
+2023-07-28 18:27:10.807 +03:00 [INF] Application started. Press Ctrl+C to shut down.
+2023-07-28 18:27:10.807 +03:00 [INF] Hosting environment: Development
+2023-07-28 18:27:10.808 +03:00 [INF] Content root path: D:\Projects\UserManagement\UserManagement\UserManagement.API
+2023-07-28 18:27:10.808 +03:00 [DBG] Hosting started
+2023-07-28 18:27:12.051 +03:00 [INF] HTTP GET /swagger responded 301 in 54.9018 ms
+2023-07-28 18:27:12.301 +03:00 [INF] HTTP GET /swagger/index.html responded 200 in 184.9679 ms
+2023-07-28 18:27:12.535 +03:00 [INF] HTTP GET /swagger/swagger-ui.css responded 200 in 168.5380 ms
+2023-07-28 18:27:12.543 +03:00 [INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 200 in 177.0842 ms
+2023-07-28 18:27:12.631 +03:00 [INF] HTTP GET /swagger/swagger-ui-bundle.js responded 200 in 265.3900 ms
+2023-07-28 18:27:12.983 +03:00 [INF] HTTP GET /swagger/favicon-32x32.png responded 200 in 0.5509 ms
+2023-07-28 18:27:13.186 +03:00 [INF] HTTP GET /swagger/v1/swagger.json responded 200 in 261.0213 ms

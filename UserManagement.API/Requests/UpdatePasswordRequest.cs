@@ -1,4 +1,4 @@
-namespace UserManagement.API.Handlers;
+namespace UserManagement.API.Requests;
 
 public class UpdatePasswordRequest
 {

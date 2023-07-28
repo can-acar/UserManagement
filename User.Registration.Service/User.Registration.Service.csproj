@@ -29,7 +29,21 @@
       <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjectionFixed" Version="5.1.2" />
       <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.9" />
       <PackageReference Include="RabbitMQ.Client" Version="6.5.0" />
+      <PackageReference Include="Serilog.Enrichers.Thread" Version="3.1.0" />
+      <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
       <PackageReference Include="Serilog.Sinks.MSSqlServer" Version="6.3.0" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Commands\" />
+      <Folder Include="Consumers\" />
+      <Folder Include="Entities\" />
+      <Folder Include="Models\" />
+      <Folder Include="Services\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\UserManagement.Domain\UserManagement.Domain.csproj" />
     </ItemGroup>
 
 </Project>

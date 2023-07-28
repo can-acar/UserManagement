@@ -4,8 +4,8 @@ namespace UserManagement.Domain.Repositories;
 
 public interface IUserRepository
 {
-    Task<User> GetByIdAsync(Guid id);
-    Task<User> GetByUsernameAsync(string username);
+    Task<User?> GetByIdAsync(Guid id);
+    Task<User?> GetByUsernameAsync(string username);
     Task<User> GetByEmailAsync(string email);
     Task AddAsync(User user);
     Task UpdateAsync(User user);
@@ -13,32 +13,28 @@ public interface IUserRepository
 
 public class UserRepository : IUserRepository
 {
-    private readonly List<User> _users = new List<User>();
-
-    public async Task<User> GetByIdAsync(Guid id)
+    public Task<User?> GetByIdAsync(Guid id)
     {
-        return await Task.FromResult(_users.FirstOrDefault(u => u.Id == id));
+        throw new NotImplementedException();
     }
 
-    public async Task<User> GetByUsernameAsync(string username)
+    public Task<User?> GetByUsernameAsync(string username)
     {
-        return await Task.FromResult(_users.FirstOrDefault(u => u.Username == username));
+        throw new NotImplementedException();
     }
 
-    public async Task<User> GetByEmailAsync(string email)
+    public Task<User> GetByEmailAsync(string email)
     {
-        return await Task.FromResult(_users.FirstOrDefault(u => u.Email == email));
+        throw new NotImplementedException();
     }
 
-    public async Task AddAsync(User user)
+    public Task AddAsync(User user)
     {
-        _users.Add(user);
-        await Task.CompletedTask;
+        throw new NotImplementedException();
     }
 
-    public async Task UpdateAsync(User user)
+    public Task UpdateAsync(User user)
     {
-        // Update user in the list
-        await Task.CompletedTask;
+        throw new NotImplementedException();
     }
 }

@@ -1,5 +1,5 @@
 ﻿services:
-  usermanagement.api:
+  usermanagement-api:
     image: usermanagement.api
     build:
       context: UserManagement.API
@@ -7,8 +7,7 @@
     ports:
       - "5005:80"
   
-  
-  mail-service.api:
+  mail-service:
     image: mailservice
     build:
       context: Mail.Service
@@ -18,13 +17,24 @@
     depends_on:
       - usermanagement-db
   
-  profile-service.api:
+  profile-service:
     image: profileservice
     build:
       context: Profile.Management.Service
       dockerfile: Dockerfile
     ports:
       - "5003:80"
+    depends_on:
+      - usermanagement-db
+  
+  
+  identity-service:
+    image: identityservice
+    build:
+      context: Login.Service
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
     depends_on:
       - usermanagement-db
   
@@ -37,27 +47,6 @@
       - "1433:1433"
     volumes:
       - user-db-data:/var/opt/mssql/data
-  
-  login-service.api:
-    image: loginservice
-    build:
-      context: Login.Service
-      dockerfile: Dockerfile
-    ports:
-      - "5001:80"
-    depends_on:
-      - usermanagement-db
-  
-  userregistration.api:
-    image: userregistration
-    build:
-      context: User.Registration.Service
-      dockerfile: Dockerfile
-    ports:
-      - "5004:80"
-    depends_on:
-      - usermanagement-db
-  
   
   rabbitmq:
     image: rabbitmq:3-management
