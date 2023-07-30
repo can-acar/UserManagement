@@ -1,6 +1,6 @@
-﻿using UserManagement.Core.Commons;
+﻿using UserManagement.Infrastructure.Commons;
 
-namespace UserManagement.Core.Interfaces;
+namespace UserManagement.Infrastructure;
 
 public interface IBaseService
 {

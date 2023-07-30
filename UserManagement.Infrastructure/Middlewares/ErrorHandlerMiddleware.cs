@@ -1,6 +1,8 @@
-﻿using UserManagement.Core.Exceptions;
+﻿using Microsoft.AspNetCore.Http;
+using UserManagement.Infrastructure.Exceptions;
+using AuthenticationException = System.Security.Authentication.AuthenticationException;
 
-namespace UserManagement.Core.Middlewares;
+namespace UserManagement.Infrastructure.Middlewares;
 
 public class ErrorHandlerMiddleware
 {

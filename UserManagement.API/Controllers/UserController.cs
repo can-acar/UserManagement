@@ -15,50 +15,13 @@ public class UserController : ControllerBase
         _logger = logger;
     }
 
-    [HttpPost("login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        try
-        {
-            var token = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
-
-            return Ok(new {AccessToken = token});
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CreateUserRequest request)
     {
         try
         {
-            await _mediator.Send(new CreateUserCommand(request.Username, request.Password));
-
-            return Ok("Registration successful. Check your email for activation link.");
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
-
-
-    [HttpPost("profile/{userId}/register")]
-    public async Task<IActionResult> RegisterProfile([FromBody] RegisterProfileRequest request, Guid userId)
-    {
-        try
-        {
-            if (userId != request.UserId)
-            {
-                return BadRequest("User Id mismatch.");
-            }
-
-            var result = await _mediator.Send(new RegisterUserProfileCommand(request.UserId, request.FirstName, request.LastName,
-                request.Email, request.PhoneNumber, request.Address, request.City, request.State, request.ZipCode,
-                request.Country, request.ProfilePictureUrl));
+            var result = await _mediator.Send(new CreateUserCommand(request.Username, request.Password, request.Email));
 
             return Ok(result);
         }
@@ -69,14 +32,15 @@ public class UserController : ControllerBase
     }
 
 
-    [HttpPost("profile/update")]
+    [HttpPost("update")]
     [Authorize] // Implement JWT authentication for this endpoint
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileRequest request)
+    public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserRequest request)
     {
         try
         {
-            await _mediator.Send(new UpdateUserProfileCommand(request.UserId, request.Username, request.Email));
-            return Ok("Profile updated successfully.");
+            var result = await _mediator.Send(new UpdateUserCommand(request.UserId, request.Username, request.Email));
+
+            return Ok(result);
         }
         catch (Exception ex)
         {
@@ -84,7 +48,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("profile/update-password")]
+    [HttpPost("update-password")]
     [Authorize] // Implement JWT authentication for this endpoint
     public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
     {
@@ -100,7 +64,7 @@ public class UserController : ControllerBase
         }
     }
 
-    [HttpPost("profile/deactivate")]
+    [HttpPost("deactivate")]
     [Authorize] // Implement JWT authentication for this endpoint
     public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
     {

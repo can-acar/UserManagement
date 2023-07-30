@@ -1,3 +1,9 @@
+using System.Security.Cryptography.X509Certificates;
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using UserManagement.API.Helpers;
+using UserManagement.Infrastructure.Middlewares;
+
 var assemblies = Assembly.GetExecutingAssembly();
 var builder = WebApplication.CreateBuilder(args);
 var host = builder.Host;
@@ -17,10 +23,9 @@ host.ConfigureLogging(x => x.ClearProviders().AddSerilog())
             .Enrich.WithThreadName()
             .Enrich.WithThreadId()
             .Enrich.WithExceptionDetails()
-            .Enrich.WithProperty("ApplicationName", "CargoPursuitApp")
+            .Enrich.WithProperty("ApplicationName", "USerManagement.API")
             .Enrich.FromLogContext()
-            .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000,
-                rollingInterval: RollingInterval.Day)
+            .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
             .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
             .ReadFrom.Configuration(ctx.Configuration);
     });
@@ -35,6 +40,10 @@ services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });
+services.AddValidationConfiguration();
+services.ConfigureMasstransit();
+services.ConfigureMediatR();
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("fixed-window", co =>
@@ -50,6 +59,15 @@ builder.WebHost.UseKestrel();
 builder.WebHost.UseIISIntegration();
 builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
 
+// var certificate = new X509Certificate2(builder.Configuration["Kestrel:Certificates:Default:Path"]!, builder.Configuration["Kestrel:Certificates:Default:Password"]);
+//
+// builder.WebHost.ConfigureKestrel(serverOptions =>
+// {
+//     serverOptions.AddServerHeader = false;
+//     serverOptions.ConfigureHttpsDefaults(listenOptions => { listenOptions.ServerCertificate = certificate; });
+// });
+
+
 var app = builder.Build();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
@@ -62,10 +80,24 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHealthChecks("/health", new HealthCheckOptions {Predicate = _ => true});
+app.UseHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse});
+app.MapHealthChecks("/health/live", new HealthCheckOptions() {Predicate = _ => false}); // Exclude all checks and return a 200-Ok
+app.MapHealthChecks("/health/ready", new HealthCheckOptions() {Predicate = (check) => check.Tags.Contains("ready")});
+
+
+app.UseRouting();
+app.UseRateLimiter();
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .SetIsOriginAllowed(_ => true));
+
 
 app.UseAuthorization();
-
 app.MapControllers();
+app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
 
 try
 {

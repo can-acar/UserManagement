@@ -9,8 +9,7 @@ public static class MassTransitConfigurationExtension
     {
         services.AddMassTransit(x =>
         {
-            x.AddSagaStateMachine<ProfileSagaStateMachine, ProfileSagaState>()
-                .InMemoryRepository();
+       
 
             x.AddSagaStateMachine<UserSagaStateMachine, UserSagaState>()
                 .InMemoryRepository();
@@ -24,6 +23,6 @@ public static class MassTransitConfigurationExtension
 
         //services.AddMassTransitHostedService();
 
-        services.AddMediatR(typeof(Program).Assembly);
+    
     }
 }

@@ -1,6 +1,7 @@
-﻿using UserManagement.Core.Commons;
+﻿using Microsoft.AspNetCore.Http;
+using UserManagement.Infrastructure.Commons;
 
-namespace UserManagement.Core.Middlewares;
+namespace UserManagement.Infrastructure.Middlewares;
 
 public class ServiceResponseHandlerMiddleware
 {

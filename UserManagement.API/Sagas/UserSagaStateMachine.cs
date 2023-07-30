@@ -1,15 +1,18 @@
 ﻿using MassTransit;
+using UserManagement.Core.Interfaces;
 
 namespace UserManagement.API.Sagas;
 
-public class UserSagaState : SagaStateMachineInstance
-{
-    public Guid CorrelationId { get; set; }
-    public string Username { get; set; }
-    public string Password { get; set; }
-}
-
 public class UserSagaStateMachine : MassTransitStateMachine<UserSagaState>
 {
-}
+    public State UserCreated { get; private set; }
+    public State UserActivated { get; private set; }
 
+    public Event<IActiveUserEvent> CreateUserEvent { get; private set; }
+    public Event<IActiveUserEvent> ActiveUserEvent { get; private set; }
+
+    public UserSagaStateMachine()
+    {
+        InstanceState(x => x.CurrentState);
+    }
+}

@@ -3,11 +3,3 @@
 public class UserCreateConsumer
 {
 }
-
-public class UserUpdateConsumer
-{
-}
-
-public class UserDeleteConsumer
-{
-}

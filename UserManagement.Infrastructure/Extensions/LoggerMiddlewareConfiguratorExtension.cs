@@ -1,6 +1,6 @@
-﻿using UserManagement.Core.Commons;
+﻿using UserManagement.Infrastructure.Commons;
 
-namespace UserManagement.Core.Extensions;
+namespace UserManagement.Infrastructure.Extensions;
 
 public static class LoggerMiddlewareConfiguratorExtension
 {

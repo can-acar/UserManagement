@@ -1,6 +1,6 @@
 using System.Globalization;
 
-namespace UserManagement.Core.Exceptions;
+namespace UserManagement.Infrastructure.Exceptions;
 
 public class AuthenticationException : Exception
 {

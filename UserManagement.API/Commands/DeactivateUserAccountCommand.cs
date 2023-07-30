@@ -1,11 +1,13 @@
+using UserManagement.Infrastructure.Commons;
+
 namespace UserManagement.API.Commands;
 
-public class DeactivateUserAccountCommand
+public class DeactivateUserAccountCommand : IRequest<ServiceResponse>
 {
     public Guid UserId { get; }
 
-    public DeactivateUserAccountCommand(Guid requestUserId)
+    public DeactivateUserAccountCommand(Guid userId)
     {
-        UserId = requestUserId;
+        UserId = userId;
     }
 }

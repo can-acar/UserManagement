@@ -1,4 +1,4 @@
-﻿namespace UserManagement.Core.Commons;
+﻿namespace UserManagement.Infrastructure.Commons;
 
 public class ExceptionLoggerFilter<T> : IFilter<T> where T : class, PipeContext
 {

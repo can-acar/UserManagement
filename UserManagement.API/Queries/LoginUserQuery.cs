@@ -1,8 +1,9 @@
 ﻿using MediatR;
+using UserManagement.Infrastructure.Commons;
 
 namespace UserManagement.API.Queries;
 
-public class LoginUserQuery : IRequest<string>
+public class LoginUserQuery : IRequest<ServiceResponse>
 {
     public string Username { get; }
     public string Password { get; }
