@@ -19,16 +19,13 @@ public class UserController : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register([FromBody] CreateUserRequest request)
     {
-        try
-        {
-            var result = await _mediator.Send(new CreateUserCommand(request.Username, request.Password, request.Email));
+        _logger.LogInformation("Register request received with username: {Username}, Detail:{@request}", request.Username, request);
 
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var result = await _mediator.Send(new CreateUserCommand(request.Username, request.Password, request.Email));
+
+        _logger.LogInformation("Register request completed successfully with username: {Username}", request.Username);
+
+        return Ok(result);
     }
 
 

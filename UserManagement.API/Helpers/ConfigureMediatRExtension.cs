@@ -1,10 +1,23 @@
-﻿namespace UserManagement.API.Helpers;
+﻿using FluentValidation;
+using UserManagement.API.Repositories;
+using UserManagement.API.Services;
 
-public static class ConfigureMediatRExtension
+namespace UserManagement.API.Helpers;
+
+public static class MediatrCongfigurationExtension
 {
-    public static void ConfigureMediatR(this IServiceCollection services)
+    public static void UseMediatRConfiguration(this IServiceCollection services, ConfigurationManager configurationManager)
     {
-        services.AddMediatR(typeof(Program).Assembly);
-        //services.AddMassTransitHostedService();
+        var assemblies = Assembly.GetExecutingAssembly();
+        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(assemblies); });
+    }
+}
+
+public static class ServicesConfigurationExtension
+{
+    public static void UseServicesConfiguration(this IServiceCollection services, ConfigurationManager configurationManager)
+    {
+        services.AddSingleton<IIdentityService, IdentityService>();
+        services.AddScoped<IUserRepository, UserRepository>();
     }
 }

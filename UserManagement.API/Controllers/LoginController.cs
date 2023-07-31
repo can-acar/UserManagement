@@ -1,4 +1,5 @@
 ﻿using UserManagement.API.Requests;
+using UserManagement.Infrastructure.Exceptions;
 
 namespace UserManagement.API.Controllers;
 
@@ -18,17 +19,12 @@ public class LoginController : ControllerBase
     [HttpPost("", Name = "Login")]
     public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        try
-        {
-            var token = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
+        _logger.LogInformation("Login request received with username: {Username}", request.Username);
 
-            return Ok(new {AccessToken = token});
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var token = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
+
+        _logger.LogInformation("Login request completed successfully with username: {Username}", request.Username);
+
+        return Ok(token);
     }
-
-  
 }

@@ -18,15 +18,12 @@ public class ForgotPasswordController : ControllerBase
     [HttpPost("", Name = "ForgotPassword")]
     public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
     {
-        try
-        {
-            var result = await _mediator.Send(new ForgotPasswordCommand(request.Email));
+        _logger.LogInformation("Forgot password request received with email: {Email}", request.Email);
 
-            return Ok(result);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
+        var result = await _mediator.Send(new ForgotPasswordCommand(request.Email));
+
+        _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
+
+        return Ok(result);
     }
 }

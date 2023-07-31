@@ -7,6 +7,8 @@ public static class MassTransitExtension
     private static readonly HashSet<Action<IBusFactoryConfigurator, IBusRegistrationContext>> BuildBefore = new();
 
     private static readonly HashSet<Action<IBusRegistrationConfigurator>> BuildBeforeRequestClient = new();
+    
+    
 
 
     public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator, Action<IReceiveEndpointConfigurator> config = null)
@@ -296,6 +298,8 @@ public static class MassTransitExtension
 
 
             configure?.Invoke(context, cfg);
+            
+            
 
 
             foreach (var action in BuildBefore) action?.Invoke(cfg, context);

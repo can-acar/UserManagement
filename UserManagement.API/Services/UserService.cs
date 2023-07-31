@@ -13,9 +13,22 @@ public class UserService : IUserService
     {
         throw new NotImplementedException();
     }
+
+    public Task UpdateProfile(Guid userId, string username, string email)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task UpdatePassword(Guid userId, string newPassword)
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public interface IUserService
 {
     Task<bool> CreateUser(CreateUserCommand user);
+    Task UpdateProfile(Guid userId, string username, string email);
+
+    Task UpdatePassword(Guid userId, string newPassword);
 }

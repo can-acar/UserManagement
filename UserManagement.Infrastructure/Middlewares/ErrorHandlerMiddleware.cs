@@ -30,14 +30,19 @@ public class ErrorHandlerMiddleware
             {
                 case AppException:
                     // custom application error
-
+                    _logger.LogError("AppException:{message}, Details: {Error}", error.Message, error);
                     response.StatusCode = (int) HttpStatusCode.BadRequest;
                     break;
                 case KeyNotFoundException:
                     // not found error
+                    _logger.LogError("KeyNotFoundException:{message}, Details: {Error}", error.Message, error);
                     response.StatusCode = (int) HttpStatusCode.NotFound;
                     break;
                 case AuthenticationException:
+                    // pattern ErrorType: {message}, Details: {details}
+                    _logger.LogError("AuthenticationException:{message}, Details: {Error}", error.Message, error);
+
+
                     response.StatusCode = (int) HttpStatusCode.Unauthorized;
                     break;
                 default:

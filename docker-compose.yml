@@ -38,8 +38,12 @@
       MSSQL_DATA_DIR: "/var/opt/sqlserver/data"
       MSSQL_LOG_DIR: "/var/opt/sqlserver/logs"
       MSSQL_PID: "Developer"
+      SERVER_COLLECTION: "TURKISH_CI_AS"
+      SERVER_NAME: "msqsql_docker_server"
+      SQL_ADMIN_LOGIN: "sa"
+      SQL_ADMIN_PASSWORD: "db+123456"
     ports:
-      - "14333:1433"
+      - "1433:1433"
     volumes:
       - ./sqlserver:/var/opt/sqlserver
   
@@ -49,6 +53,15 @@
     ports:
       - 5672:5672
       - 15672:15672
+    # create a user, virtual host and set a password
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_VHOST=/
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq/rabbitmq.json:/etc/rabbitmq/definitions.json
     
     networks:
       - rabbitmq_go_net

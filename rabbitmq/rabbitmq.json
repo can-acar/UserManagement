@@ -1,0 +1,61 @@
+{
+  "rabbit_version": "3.9.14",
+  "users": [
+    {
+      "name": "admin",
+      "password_hash": "admin",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": "administrator"
+    },
+    {
+      "name": "identity",
+      "password_hash": "identity",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    },
+    {
+      "name": "user2",
+      "password_hash": "identity",
+      "hashing_algorithm": "rabbit_password_hashing_sha256",
+      "tags": ""
+    }
+  ],
+  "vhosts": [
+    {
+      "name": "identity"
+    },
+    {
+      "name": "email"
+    }
+  ],
+  "permissions": [
+    {
+      "user": "admin",
+      "vhost": "identity",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+        "user": "admin",
+      "vhost": "email",
+      "configure": ".*",
+      "write": ".*",
+      "read": ".*"
+    },
+    {
+      "user": "identity",
+      "vhost": "identity",
+      "configure": "",
+      "write": "",
+      "read": ".*"
+    },
+    {
+      "user": "email",
+      "vhost": "email",
+      "configure": "",
+      "write": ".*",
+      "read": ""
+    }
+  ]
+}

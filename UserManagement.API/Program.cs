@@ -40,9 +40,12 @@ services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });
-services.AddValidationConfiguration();
-services.ConfigureMasstransit();
-services.ConfigureMediatR();
+// 
+services.UseValidationConfiguration(configuration);
+services.UseMassTransitConfiguration(configuration);
+services.UseMediatRConfiguration(configuration);
+services.UseServicesConfiguration(configuration);
+services.UseDbConfiguration(configuration);
 
 builder.Services.AddRateLimiter(options =>
 {
@@ -85,7 +88,7 @@ app.UseHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true, R
 app.MapHealthChecks("/health/live", new HealthCheckOptions() {Predicate = _ => false}); // Exclude all checks and return a 200-Ok
 app.MapHealthChecks("/health/ready", new HealthCheckOptions() {Predicate = (check) => check.Tags.Contains("ready")});
 
-
+app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseRateLimiter();
 app.UseCors(x => x
