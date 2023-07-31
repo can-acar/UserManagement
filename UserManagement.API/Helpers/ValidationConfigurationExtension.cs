@@ -1,6 +1,5 @@
 ﻿using FluentValidation.AspNetCore;
 using MediatR.Extensions.FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
 using UserManagement.Infrastructure.Commons;
 
 namespace UserManagement.API.Helpers;

@@ -13,7 +13,7 @@
       - kibana
       - log_stash
       - mock_smtp_server
-  
+
   mail_service:
     image: mailservice
     build:
@@ -28,7 +28,7 @@
       - mock_smtp_server
       - rabbitmq
       - usermanagement_db
-  
+
   usermanagement_db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
@@ -46,10 +46,10 @@
       - "1433:1433"
     volumes:
       - ./sqlserver:/var/opt/sqlserver
-  
+
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: 'rabbitmq'
+    container_name: "rabbitmq"
     ports:
       - 5672:5672
       - 15672:15672
@@ -62,12 +62,12 @@
     volumes:
       - ./rabbitmq:/var/lib/rabbitmq
       - ./rabbitmq/rabbitmq.json:/etc/rabbitmq/definitions.json
-    
+
     networks:
       - rabbitmq_go_net
     hostname: local-queue
-    command: [ "bash","-c","rabbitmq-server" ]
-  
+    command: ["bash", "-c", "rabbitmq-server"]
+
   elastic_search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
     container_name: elastic_search
@@ -90,7 +90,7 @@
       - backend
       - rabbitmq_go_net
       - public
-  
+
   kibana:
     image: docker.elastic.co/kibana/kibana:7.15.0
     container_name: kibana
@@ -109,8 +109,7 @@
       - public
     volumes:
       - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
-  
-  
+
   log_stash:
     image: docker.elastic.co/logstash/logstash:7.15.0
     container_name: log_stash
@@ -128,7 +127,6 @@
       - public
     command: logstash -f /etc/logstash/conf.d/logstash.conf
 
-
   mock_smtp_server:
     image: soulteary/maildev
     container_name: fake_mail_server
@@ -139,12 +137,10 @@
       - backend
     restart: always
 
-
-
 networks:
   rabbitmq_go_net:
     driver: "bridge"
-  
+
   backend:
     name: "backend"
     driver: "bridge"
@@ -165,3 +161,8 @@ networks:
       driver: default
       config:
         - subnet: 171.17.25.0/16
+  usermanagement.apı:
+    image: usermanagement.apı
+    build:
+      context: .
+      dockerfile: UserManagement.API/Dockerfile

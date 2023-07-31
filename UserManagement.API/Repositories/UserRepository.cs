@@ -1,11 +1,7 @@
-﻿using UserManagement.API.Data;
-using UserManagement.API.Models;
+﻿using UserManagement.Core.Data;
+using UserManagement.Core.Models;
 
 namespace UserManagement.API.Repositories;
-
-public interface IUserRepository
-{
-}
 
 public class UserRepository : IUserRepository
 {

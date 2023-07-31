@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
-using UserManagement.API.Data;
+using UserManagement.Core.Data;
 
 namespace UserManagement.API.Helpers;
 

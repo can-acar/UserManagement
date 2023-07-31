@@ -1,5 +1,4 @@
 ﻿using FluentValidation;
-using UserManagement.API.Handlers;
 using UserManagement.API.Requests;
 
 namespace UserManagement.API.Validations;
