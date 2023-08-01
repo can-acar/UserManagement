@@ -41,10 +41,10 @@ host.UseSerilog();
 services.AddOptions();
 
 services.AddHealthChecks();
-
+services.UseServicesConfiguration(configuration);
 services.UseMassTransitConfiguration(configuration);
 // services.UseMediatrConfiguration(configuration);
-services.UseServicesConfiguration(configuration);
+
 builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
 
 var app = builder.Build();
