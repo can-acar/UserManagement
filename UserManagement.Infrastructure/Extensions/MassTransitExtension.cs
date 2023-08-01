@@ -7,8 +7,6 @@ public static class MassTransitExtension
     private static readonly HashSet<Action<IBusFactoryConfigurator, IBusRegistrationContext>> BuildBefore = new();
 
     private static readonly HashSet<Action<IBusRegistrationConfigurator>> BuildBeforeRequestClient = new();
-    
-    
 
 
     public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator, Action<IReceiveEndpointConfigurator> config = null)
@@ -29,8 +27,7 @@ public static class MassTransitExtension
     }
 
 
-    public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator, string queueName,
-        Action<IReceiveEndpointConfigurator> config = null)
+    public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator, string queueName, Action<IReceiveEndpointConfigurator> config = null)
         where TConsumer : class, IConsumer
 
     {
@@ -41,8 +38,7 @@ public static class MassTransitExtension
         return configurator;
     }
 
-    public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator,
-        string queueName) where TConsumer : class, IConsumer
+    public static IBusRegistrationConfigurator SetConsumer<TConsumer>(this IBusRegistrationConfigurator configurator, string queueName) where TConsumer : class, IConsumer
     {
         Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) =>
         {
@@ -122,8 +118,8 @@ public static class MassTransitExtension
     }
 
 
-    public static IReceiveEndpointConfigurator ConfigConsumer<TConsumer>(this IReceiveEndpointConfigurator configurator,
-        Action<IReceiveEndpointConfigurator> config = null) where TConsumer : class, IConsumer
+    public static IReceiveEndpointConfigurator ConfigConsumer<TConsumer>(this IReceiveEndpointConfigurator configurator, Action<IReceiveEndpointConfigurator> config = null)
+        where TConsumer : class, IConsumer
     {
         Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) =>
         {
@@ -139,8 +135,8 @@ public static class MassTransitExtension
     }
 
 
-    public static IReceiveEndpointConfigurator ConfigConsumer<TConsumer>(this IReceiveEndpointConfigurator configurator, string queueName,
-        Action<IReceiveEndpointConfigurator> config = null) where TConsumer : class, IConsumer
+    public static IReceiveEndpointConfigurator ConfigConsumer<TConsumer>(this IReceiveEndpointConfigurator configurator, string queueName, Action<IReceiveEndpointConfigurator> config = null)
+        where TConsumer : class, IConsumer
     {
         Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) =>
         {
@@ -298,8 +294,6 @@ public static class MassTransitExtension
 
 
             configure?.Invoke(context, cfg);
-            
-            
 
 
             foreach (var action in BuildBefore) action?.Invoke(cfg, context);
@@ -310,9 +304,7 @@ public static class MassTransitExtension
     }
 
 
-    public static void UseMemory(this IBusRegistrationConfigurator configurator,
-        Action<IBusRegistrationContext,
-            IInMemoryBusFactoryConfigurator> configure = null)
+    public static void UseMemory(this IBusRegistrationConfigurator configurator, Action<IBusRegistrationContext, IInMemoryBusFactoryConfigurator> configure = null)
     {
         configurator.AddBus(context => Bus.Factory.CreateUsingInMemory(cfg =>
         {

@@ -9,10 +9,3 @@ public class IdentityService : IIdentityService
         throw new AppException("Forgot password request failed.");
     }
 }
-
-public interface IIdentityService
-{
-    Task ForgotPassword(string email);
-    
-    
-}

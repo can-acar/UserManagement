@@ -24,7 +24,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, ServiceRespo
         {
             _logger.LogInformation("Creating user with username: {Username}", command.Username);
 
-
+            //
             await _publishEndpoint.Publish<IActiveUserEvent>(new
             {
                 Username = command.Username,
@@ -32,12 +32,12 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, ServiceRespo
                 Email = command.Email
             }, cancellationToken);
 
-            await _busControl.Publish<IActiveUserEvent>(new
-            {
-                Username = command.Username,
-                Password = command.Password,
-                Email = command.Email
-            }, cancellationToken);
+            // await _busControl.Publish<IActiveUserEvent>(new
+            // {
+            //     Username = command.Username,
+            //     Password = command.Password,
+            //     Email = command.Email
+            // }, cancellationToken);
 
 
             _logger.LogInformation("User created successfully with username: {Username}", command.Username);

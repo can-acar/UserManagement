@@ -1,5 +1,4 @@
-﻿using MediatR;
-using UserManagement.Infrastructure.Commons;
+﻿using UserManagement.Infrastructure.Commons;
 
 namespace UserManagement.API.Queries;
 

@@ -1,4 +1,3 @@
-using System.Security.Cryptography.X509Certificates;
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using UserManagement.API.Helpers;
@@ -26,7 +25,7 @@ host.ConfigureLogging(x => x.ClearProviders().AddSerilog())
             .Enrich.WithProperty("ApplicationName", "USerManagement.API")
             .Enrich.FromLogContext()
             .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
-            .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
+            .WriteTo.Console(theme: AnsiConsoleTheme.Sixteen)
             .ReadFrom.Configuration(ctx.Configuration);
     });
 
@@ -39,13 +38,15 @@ services.AddCors();
 services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
+
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });
 // 
 services.UseValidationConfiguration(configuration);
 services.UseMassTransitConfiguration(configuration);
-services.UseMediatRConfiguration(configuration);
+services.UseMediatrConfiguration(configuration);
 services.UseServicesConfiguration(configuration);
 services.UseDbConfiguration(configuration);
+
 
 builder.Services.AddRateLimiter(options =>
 {

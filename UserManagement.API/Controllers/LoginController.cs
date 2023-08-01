@@ -1,5 +1,4 @@
 ﻿using UserManagement.API.Requests;
-using UserManagement.Infrastructure.Exceptions;
 
 namespace UserManagement.API.Controllers;
 
