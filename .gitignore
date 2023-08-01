@@ -3,3 +3,15 @@ obj/
 /packages/
 riderModule.iml
 /_ReSharper.Caches/
+/kibana/
+/.idea/
+/.vscode/
+/.vs/
+/rabbitmq/
+/sqlserver/
+/redis/
+/consul/
+/consul-template/
+/logstash/
+/docker/
+**/esdata/*
