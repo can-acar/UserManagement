@@ -13,15 +13,15 @@ var configuration = builder.Configuration;
 host.ConfigureLogging(x => x.ClearProviders().AddSerilog())
     .UseSerilog((ctx, lc) =>
     {
-        lc.MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
+        lc //.MinimumLevel.Debug()
+            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
             .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.AspNetCore.DataProtection", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
             .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Server.WebListener", LogEventLevel.Information)
             .Enrich.WithThreadName()
             .Enrich.WithThreadId()
-            .Enrich.WithExceptionDetails()
+            //.Enrich.WithExceptionDetails()
             .Enrich.WithProperty("ApplicationName", "USerManagement.API")
             .Enrich.FromLogContext()
             .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)

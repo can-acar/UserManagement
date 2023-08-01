@@ -17,7 +17,7 @@ public static class MassTransitConfigurationExtension
             x.AddSagaStateMachine<UserSagaStateMachine, UserSagaState>()
                 .EntityFrameworkRepository(o => o.AddDbContext<DbContext, UserManagementData>((provider, builder) =>
                 {
-                    builder.UseSqlServer(configuration.GetConnectionString("SagaMachine"), options =>
+                    builder.UseSqlServer(configuration.GetConnectionString("Db"), options =>
                     {
                         options.UseRelationalNulls();
                         options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);

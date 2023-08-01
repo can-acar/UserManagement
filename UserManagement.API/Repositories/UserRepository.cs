@@ -1,4 +1,5 @@
-﻿using UserManagement.Core.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using UserManagement.Core.Data;
 using UserManagement.Core.Models;
 
 namespace UserManagement.API.Repositories;
@@ -12,8 +13,23 @@ public class UserRepository : IUserRepository
         _userManagementData = userManagementData;
     }
 
-    public async Task<User> GetUserById(Guid userId)
+  
+    public async Task<bool> HasUser(User user)
     {
-        return await Task.FromResult(new User());
+        return await _userManagementData.Users.AnyAsync(x => x.Username == user.Username || x.Email == user.Email);
+    }
+
+
+    public async Task<User> CreateUser(User user)
+    {
+        await _userManagementData.Database.BeginTransactionAsync();
+
+        await _userManagementData.Users.AddAsync(user);
+
+        await _userManagementData.SaveChangesAsync();
+
+        await _userManagementData.Database.CommitTransactionAsync();
+
+        return user;
     }
 }

@@ -15,6 +15,11 @@ public class UserManagementData : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(
+                "Server=(local);TrustServerCertificate=True;Database=identity;MultipleActiveResultSets=true;Application Name=UserManagement;User Id=sa;Password=db+123456;");
+        }
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

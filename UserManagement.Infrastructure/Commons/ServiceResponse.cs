@@ -21,11 +21,11 @@ public class ServiceResponse
     }
 
 
-    public static async Task<ServiceResponse> SuccessAsync(string message, bool status, object data)
+    public static async Task<ServiceResponse> SuccessAsync(string message, object data)
     {
         return await Task.FromResult(new ServiceResponse
         {
-            Status = status,
+            Status = true,
             Message = message,
             Data = data
         });

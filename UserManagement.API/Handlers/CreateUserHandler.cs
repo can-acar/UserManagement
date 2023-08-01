@@ -1,4 +1,5 @@
-﻿using UserManagement.Core.Interfaces;
+﻿using UserManagement.API.Services;
+using UserManagement.Core.Interfaces;
 using UserManagement.Infrastructure.Commons;
 using UserManagement.Infrastructure.Exceptions;
 
@@ -9,47 +10,51 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, ServiceRespo
     private readonly ILogger<CreateUserHandler> _logger;
     private readonly IPublishEndpoint _publishEndpoint;
     private readonly IBusControl _busControl;
+    private readonly IUserService _userService;
 
-    public CreateUserHandler(ILogger<CreateUserHandler> logger, IPublishEndpoint publishEndpoint, IBusControl busControl)
+    public CreateUserHandler(ILogger<CreateUserHandler> logger, IPublishEndpoint publishEndpoint, IBusControl busControl, IUserService userService)
     {
         _logger = logger;
         _publishEndpoint = publishEndpoint;
         _busControl = busControl;
+        _userService = userService;
     }
 
 
     public async Task<ServiceResponse> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        try
+        // try
+        // {
+        _logger.LogInformation("[EXECUTING]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
+
+        var result = await _userService.CreateUser(command);
+
+        //
+        await _publishEndpoint.Publish<IActiveUserEvent>(new
         {
-            _logger.LogInformation("Creating user with username: {Username}", command.Username);
+            Username = command.Username,
+            Password = command.Password,
+            Email = command.Email
+        }, cancellationToken);
 
-            //
-            await _publishEndpoint.Publish<IActiveUserEvent>(new
-            {
-                Username = command.Username,
-                Password = command.Password,
-                Email = command.Email
-            }, cancellationToken);
-
-            // await _busControl.Publish<IActiveUserEvent>(new
-            // {
-            //     Username = command.Username,
-            //     Password = command.Password,
-            //     Email = command.Email
-            // }, cancellationToken);
+        // await _busControl.Publish<IActiveUserEvent>(new
+        // {
+        //     Username = command.Username,
+        //     Password = command.Password,
+        //     Email = command.Email
+        // }, cancellationToken);
 
 
-            _logger.LogInformation("User created successfully with username: {Username}", command.Username);
+        _logger.LogInformation("[EXECUTED:SUCCESS]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
 
 
-            return await ServiceResponse.SuccessAsync("User created successfully.");
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating user with username: {Username}", command.Username);
-
-            throw new AppException(ex.Message);
-        }
+        return result;
+        // }
+        // catch (Exception ex)
+        // {
+        //     _logger.LogError(ex, "Error creating user with username: {Username}", command.Username);
+        //
+        //     throw new AppException(ex.Message);
+        // }
     }
 }
