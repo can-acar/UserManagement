@@ -1,51 +1,31 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using UserManagement.Core.Consumers;
-using UserManagement.Core.Data;
-using UserManagement.Core.Sagas;
-using UserManagement.Infrastructure.Extensions;
+﻿using UserManagement.Core.Consumers;
 
 
-namespace UserManagement.API.Helpers;
-
-public static class MassTransitConfigurationExtension
+namespace UserManagement.API.Helpers
 {
-    public static void UseMassTransitConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static class MassTransitConfigurationExtension
     {
-        services.AddMassTransit(x =>
+        public static void UseMassTransitConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            x.AddSagaStateMachine<UserSagaStateMachine, UserSagaState>()
-                .EntityFrameworkRepository(o => o.AddDbContext<DbContext, UserManagementData>((provider, builder) =>
+            services.AddMassTransit(cfg =>
+            {
+                cfg.AddConsumer<UserCreateConsumer>();
+
+                cfg.UsingRabbitMq((ctx, x) =>
                 {
-                    builder.UseSqlServer(configuration.GetConnectionString("Db"), options =>
+                    x.Host(configuration["RabbitMQ:Host"], h =>
                     {
-                        options.UseRelationalNulls();
-                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                    }).ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuting, LogLevel.Debug)));
-                }));
+                        h.Username(configuration["RabbitMQ:Username"]);
+                        h.Password(configuration["RabbitMQ:Password"]);
+                    });
 
-            // x.AddConsumer<UserCreateConsumer>().Endpoint(ep => ep.Name = "user_create_queue");
-            // x.AddConsumer<UserActivationMailConsumer>().Endpoint(ep => ep.Name = "user_activation_mail_queue");
-            x.SetConsumer<UserCreateConsumer>("user_create_queue", cfg =>
-            {
-                cfg.UseRateLimit(10, TimeSpan.FromSeconds(10));
+                    // Event türlerini ve consumer'ları ilişkilendirme
+                    x.ReceiveEndpoint("user-saga", ep =>
+                    {
+                        ep.Consumer<UserCreateConsumer>(ctx);
+                    });
+                });
             });
-            x.SetConsumer<UserActivationMailConsumer>("user_activation_mail_queue", cfg =>
-            {
-                cfg.UseRateLimit(10, TimeSpan.FromSeconds(10));
-            });
-
-
-            // x.AddEndpoint("user_registration_queue", cfg =>
-            // {
-            //     cfg.ConfigureConsumer<UserRegistrationConsumer>(services);
-            // });
-            //
-            //
-            x.UseRabbitMq();
-        });
-
-        services.AddHostedService<Worker>();
-        //services.AddMassTransitHostedService();
+        }
     }
 }

@@ -1,32 +1,34 @@
 ﻿using UserManagement.API.Requests;
+using UserManagement.Core.Queries;
 
-namespace UserManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class UserActivationController : ControllerBase
+namespace UserManagement.API.Controllers
 {
-    private readonly ILogger<UserActivationController> _logger;
-    private readonly IMediator _mediator;
-
-    public UserActivationController(ILogger<UserActivationController> logger, IMediator mediator)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserActivationController : ControllerBase
     {
-        _logger = logger;
-        _mediator = mediator;
-    }
+        private readonly ILogger<UserActivationController> _logger;
+        private readonly IMediator _mediator;
 
-    [HttpPost("", Name = "ActivateUser")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        try
+        public UserActivationController(ILogger<UserActivationController> logger, IMediator mediator)
         {
-            var response = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
-
-            return Ok(response);
+            _logger = logger;
+            _mediator = mediator;
         }
-        catch (Exception ex)
+
+        [HttpPost("", Name = "ActivateUser")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            return BadRequest(ex.Message);
+            try
+            {
+                var response = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
+
+                return Ok(response);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
-namespace UserManagement.Core.Consumers;
-
-public class UserDeleteConsumer
+namespace UserManagement.Core.Consumers
 {
+    public class UserDeleteConsumer
+    {
+    }
 }

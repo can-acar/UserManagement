@@ -1,29 +1,31 @@
 ﻿using UserManagement.API.Requests;
+using UserManagement.Core.Commands;
 
-namespace UserManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class ForgotPasswordController : ControllerBase
+namespace UserManagement.API.Controllers
 {
-    private readonly ILogger<ForgotPasswordController> _logger;
-    private readonly IMediator _mediator;
-
-    public ForgotPasswordController(ILogger<ForgotPasswordController> logger, IMediator mediator)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class ForgotPasswordController : ControllerBase
     {
-        _logger = logger;
-        _mediator = mediator;
-    }
+        private readonly ILogger<ForgotPasswordController> _logger;
+        private readonly IMediator _mediator;
 
-    [HttpPost("", Name = "ForgotPassword")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
-    {
-        _logger.LogInformation("Forgot password request received with email: {Email}", request.Email);
+        public ForgotPasswordController(ILogger<ForgotPasswordController> logger, IMediator mediator)
+        {
+            _logger = logger;
+            _mediator = mediator;
+        }
 
-        var result = await _mediator.Send(new ForgotPasswordCommand(request.Email));
+        [HttpPost("", Name = "ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest request)
+        {
+            _logger.LogInformation("Forgot password request received with email: {Email}", request.Email);
 
-        _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
+            var result = await _mediator.Send(new ForgotPasswordCommand(request.Email));
 
-        return Ok(result);
+            _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
+
+            return Ok(result);
+        }
     }
 }

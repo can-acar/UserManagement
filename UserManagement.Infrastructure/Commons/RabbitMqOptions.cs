@@ -1,15 +1,16 @@
-﻿namespace UserManagement.Infrastructure.Commons;
-
-public class RabbitMqOptions
+﻿namespace UserManagement.Infrastructure.Commons
 {
-    private readonly IConfiguration _configuration;
-
-    public RabbitMqOptions(IConfiguration configuration)
+    public class RabbitMqOptions
     {
-        _configuration = configuration.GetSection("RabbitMq");
-    }
+        private readonly IConfiguration _configuration;
 
-    public string RabbitMqUri => _configuration["Host"];
-    public string RabbitMqUserName => _configuration["UserName"];
-    public string RabbitMqPassword => _configuration["Password"];
+        public RabbitMqOptions(IConfiguration configuration)
+        {
+            _configuration = configuration.GetSection("RabbitMq");
+        }
+
+        public string RabbitMqUri => _configuration["Host"];
+        public string RabbitMqUserName => _configuration["UserName"];
+        public string RabbitMqPassword => _configuration["Password"];
+    }
 }

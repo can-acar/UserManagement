@@ -1,13 +1,14 @@
 ﻿using FluentValidation;
 using UserManagement.API.Requests;
 
-namespace UserManagement.API.Validations;
-
-public class UpdatePasswordRequestValidator : AbstractValidator<UpdatePasswordRequest>
+namespace UserManagement.API.Validations
 {
-    public UpdatePasswordRequestValidator()
+    public class UpdatePasswordRequestValidator : AbstractValidator<UpdatePasswordRequest>
     {
-        RuleFor(x => x.UserId).NotEmpty();
-        RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(6);
+        public UpdatePasswordRequestValidator()
+        {
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.NewPassword).NotEmpty().MinimumLength(6);
+        }
     }
 }

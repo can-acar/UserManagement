@@ -2,59 +2,60 @@
 using UserManagement.Infrastructure.Exceptions;
 using AuthenticationException = System.Security.Authentication.AuthenticationException;
 
-namespace UserManagement.Infrastructure.Middlewares;
-
-public class ErrorHandlerMiddleware
+namespace UserManagement.Infrastructure.Middlewares
 {
-    private readonly RequestDelegate _next;
-    private readonly ILogger _logger;
-
-    public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
+    public class ErrorHandlerMiddleware
     {
-        _next = next;
-        _logger = logger;
-    }
+        private readonly RequestDelegate _next;
+        private readonly ILogger<ErrorHandlerMiddleware> _logger;
 
-    public async Task Invoke(HttpContext context)
-    {
-        try
+        public ErrorHandlerMiddleware(RequestDelegate next, ILogger<ErrorHandlerMiddleware> logger)
         {
-            await _next(context);
+            _next = next;
+            _logger = logger;
         }
-        catch (Exception error)
+
+        public async Task Invoke(HttpContext context)
         {
-            var response = context.Response;
-            response.ContentType = "application/json";
-
-            switch (error)
+            try
             {
-                case AppException:
-                    // custom application error
-                    _logger.LogError("AppException:{message}, Details: {Error}", error.Message, error);
-                    response.StatusCode = (int) HttpStatusCode.BadRequest;
-                    break;
-                case KeyNotFoundException:
-                    // not found error
-                    _logger.LogError("KeyNotFoundException:{message}, Details: {Error}", error.Message, error);
-                    response.StatusCode = (int) HttpStatusCode.NotFound;
-                    break;
-                case AuthenticationException:
-                    // pattern ErrorType: {message}, Details: {details}
-                    _logger.LogError("AuthenticationException:{message}, Details: {Error}", error.Message, error);
-
-
-                    response.StatusCode = (int) HttpStatusCode.Unauthorized;
-                    break;
-                default:
-                    // unhandled error
-                    _logger.LogError(error, error.Message);
-                    response.StatusCode = (int) HttpStatusCode.InternalServerError;
-                    break;
+                await _next(context);
             }
+            catch (Exception error)
+            {
+                var response = context.Response;
+                response.ContentType = "application/json";
 
-            var result = JsonConvert.SerializeObject(new {error = true, isSuccess = false, message = error.Message});
+                switch (error)
+                {
+                    case AppException:
+                        // custom application error
+                        _logger.LogError("AppException:{message}, Details: {Error}", error.Message, error);
+                        response.StatusCode = (int) HttpStatusCode.BadRequest;
+                        break;
+                    case KeyNotFoundException:
+                        // not found error
+                        _logger.LogError("KeyNotFoundException:{message}, Details: {Error}", error.Message, error);
+                        response.StatusCode = (int) HttpStatusCode.NotFound;
+                        break;
+                    case AuthenticationException:
+                        // pattern ErrorType: {message}, Details: {details}
+                        _logger.LogError("AuthenticationException:{message}, Details: {Error}", error.Message, error);
 
-            await response.WriteAsync(result);
+
+                        response.StatusCode = (int) HttpStatusCode.Unauthorized;
+                        break;
+                    default:
+                        // unhandled error
+                        _logger.LogError(error, error.Message);
+                        response.StatusCode = (int) HttpStatusCode.InternalServerError;
+                        break;
+                }
+
+                var result = JsonConvert.SerializeObject(new {error = true, isSuccess = false, message = error.Message});
+
+                await response.WriteAsync(result);
+            }
         }
     }
 }

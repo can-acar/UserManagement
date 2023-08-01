@@ -1,5 +1,6 @@
-namespace UserManagement.Core.Consumers;
-
-public class UserUpdateConsumer
+namespace UserManagement.Core.Consumers
 {
+    public class UserUpdateConsumer
+    {
+    }
 }

@@ -1,25 +1,32 @@
-﻿namespace UserManagement.API;
-
-public class Worker : IHostedService
+﻿namespace UserManagement.API
 {
-    private readonly IBusControl _busControl;
-
-    public Worker(IBusControl busControl)
+    public class Worker : IHostedService
     {
-        _busControl = busControl;
-    }
+        private readonly ILogger<Worker> _logger;
+        private readonly IBusControl _busControl;
 
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        _busControl.StartAsync(cancellationToken);
+        public Worker(ILogger<Worker> logger, IBusControl busControl)
+        {
+            _logger = logger;
+            _busControl = busControl;
+        }
 
-        return Task.CompletedTask;
-    }
+        public Task StartAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
 
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _busControl.StopAsync(cancellationToken);
+            _busControl.StartAsync(cancellationToken);
 
-        return Task.CompletedTask;
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Worker stopping at: {time}", DateTimeOffset.Now);
+
+            _busControl.StopAsync(cancellationToken);
+
+            return Task.CompletedTask;
+        }
     }
 }

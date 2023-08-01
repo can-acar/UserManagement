@@ -1,11 +1,12 @@
 ﻿using UserManagement.Infrastructure.Commons;
 
-namespace UserManagement.Infrastructure.Extensions;
-
-public static class LoggerMiddlewareConfiguratorExtension
+namespace UserManagement.Infrastructure.Extensions
 {
-    public static void UseExceptionLogger<T>(this IPipeConfigurator<T> configurator) where T : class, PipeContext
+    public static class LoggerMiddlewareConfiguratorExtension
     {
-        configurator.AddPipeSpecification(new ExceptionLoggerSpecification<T>());
+        public static void UseExceptionLogger<T>(this IPipeConfigurator<T> configurator) where T : class, PipeContext
+        {
+            configurator.AddPipeSpecification(new ExceptionLoggerSpecification<T>());
+        }
     }
 }

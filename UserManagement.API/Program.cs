@@ -1,5 +1,7 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
 using UserManagement.API.Helpers;
 using UserManagement.Infrastructure.Middlewares;
 
@@ -9,25 +11,31 @@ var host = builder.Host;
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// host configure loggin
-host.ConfigureLogging(x => x.ClearProviders().AddSerilog())
-    .UseSerilog((ctx, lc) =>
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug() // developer mode
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.DataProtection", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Server.WebListener", LogEventLevel.Information)
+    .Enrich.WithThreadName()
+    .Enrich.WithThreadId()
+    //.Enrich.WithExceptionDetails()
+    .Enrich.WithProperty("ApplicationName", "UserManagement.API")
+    .Enrich.FromLogContext()
+    //.WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
+    .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions
     {
-        lc //.MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.DataProtection", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Server.WebListener", LogEventLevel.Information)
-            .Enrich.WithThreadName()
-            .Enrich.WithThreadId()
-            //.Enrich.WithExceptionDetails()
-            .Enrich.WithProperty("ApplicationName", "USerManagement.API")
-            .Enrich.FromLogContext()
-            .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
-            .WriteTo.Console(theme: AnsiConsoleTheme.Sixteen)
-            .ReadFrom.Configuration(ctx.Configuration);
-    });
+        AutoRegisterTemplate = true,
+        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+        IndexFormat = "usermanagement-api-log-{0:yyyy.MM.dd}",
+        CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true),
+        MinimumLogEventLevel = LogEventLevel.Debug
+    })
+    .CreateLogger();
+
+host.UseSerilog();
 
 // Add services to the container.
 
@@ -38,6 +46,7 @@ services.AddCors();
 services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
+
 
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });
 // 
@@ -90,6 +99,7 @@ app.MapHealthChecks("/health/live", new HealthCheckOptions() {Predicate = _ => f
 app.MapHealthChecks("/health/ready", new HealthCheckOptions() {Predicate = (check) => check.Tags.Contains("ready")});
 
 app.UseSerilogRequestLogging();
+
 app.UseRouting();
 app.UseRateLimiter();
 app.UseCors(x => x
@@ -99,7 +109,7 @@ app.UseCors(x => x
     .SetIsOriginAllowed(_ => true));
 
 
-app.UseAuthorization();
+app.UseAuthentication();
 app.MapControllers();
 app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
 

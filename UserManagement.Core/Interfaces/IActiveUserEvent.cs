@@ -1,7 +1,8 @@
-namespace UserManagement.Core.Interfaces;
-
-public interface IActiveUserEvent
+namespace UserManagement.Core.Interfaces
 {
-    public Guid UserId { get; set; }
-    string Email { get; set; }
+    public interface IUserActiveEvent
+    {
+        public Guid UserId { get; set; }
+        string Email { get; set; }
+    }
 }

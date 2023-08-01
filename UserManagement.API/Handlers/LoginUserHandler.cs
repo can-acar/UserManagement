@@ -1,21 +1,22 @@
-﻿using UserManagement.Infrastructure.Commons;
+﻿using UserManagement.Core.Queries;
 using UserManagement.Infrastructure.Exceptions;
 
-namespace UserManagement.API.Handlers;
-
-public class LoginUserHandler : IRequestHandler<LoginUserQuery, ServiceResponse>
+namespace UserManagement.API.Handlers
 {
-    private readonly ILogger<LoginUserHandler> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
-
-    public LoginUserHandler(ILogger<LoginUserHandler> logger, IPublishEndpoint publishEndpoint)
+    public class LoginUserHandler : IRequestHandler<LoginUserQuery, ServiceResponse>
     {
-        _logger = logger;
-        _publishEndpoint = publishEndpoint;
-    }
+        private readonly ILogger<LoginUserHandler> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-    public Task<ServiceResponse> Handle(LoginUserQuery request, CancellationToken cancellationToken)
-    {
-        throw new AuthenticationException("Invalid username or password.");
+        public LoginUserHandler(ILogger<LoginUserHandler> logger, IPublishEndpoint publishEndpoint)
+        {
+            _logger = logger;
+            _publishEndpoint = publishEndpoint;
+        }
+
+        public Task<ServiceResponse> Handle(LoginUserQuery request, CancellationToken cancellationToken)
+        {
+            throw new AuthenticationException("Invalid username or password.");
+        }
     }
 }

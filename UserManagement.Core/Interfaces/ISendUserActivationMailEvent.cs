@@ -1,7 +1,8 @@
-namespace UserManagement.Core.Interfaces;
-
-public interface ISendUserActivationMailEvent
+namespace UserManagement.Core.Interfaces
 {
-    public Guid UserId { get; set; }
-    string Email { get; set; }
+    public interface ISendUserActivationMailEvent
+    {
+        public Guid UserId { get; set; }
+        string Email { get; set; }
+    }
 }

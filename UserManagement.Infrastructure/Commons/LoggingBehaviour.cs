@@ -1,30 +1,31 @@
-namespace UserManagement.Infrastructure.Commons;
-
-public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
+namespace UserManagement.Infrastructure.Commons
 {
-    private readonly ILogger<LoggingBehaviour<TRequest, TResponse>> _logger;
-
-    public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest, TResponse>> logger)
+    public class LoggingBehaviour<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse> where TRequest : IRequest<TResponse>
     {
-        _logger = logger;
-    }
+        private readonly ILogger<LoggingBehaviour<TRequest, TResponse>> _logger;
 
-
-    public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
-    {
-        //Request
-        _logger.LogInformation($"Handling {typeof(TRequest).Name}");
-        var myType = request.GetType();
-        IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
-        foreach (var prop in props)
+        public LoggingBehaviour(ILogger<LoggingBehaviour<TRequest, TResponse>> logger)
         {
-            var propValue = prop.GetValue(request, null);
-            _logger.LogInformation("{Property} : {@Value}", prop.Name, propValue);
+            _logger = logger;
         }
 
-        var response = await next();
-        //Response
-        _logger.LogInformation($"Handled {typeof(TResponse).Name}");
-        return response;
+
+        public async Task<TResponse> Handle(TRequest request, RequestHandlerDelegate<TResponse> next, CancellationToken cancellationToken)
+        {
+            //Request
+            _logger.LogInformation($"Handling {typeof(TRequest).Name}");
+            var myType = request.GetType();
+            IList<PropertyInfo> props = new List<PropertyInfo>(myType.GetProperties());
+            foreach (var prop in props)
+            {
+                var propValue = prop.GetValue(request, null);
+                _logger.LogInformation("{Property} : {@Value}", prop.Name, propValue);
+            }
+
+            var response = await next();
+            //Response
+            _logger.LogInformation($"Handled {typeof(TResponse).Name}");
+            return response;
+        }
     }
 }

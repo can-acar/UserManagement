@@ -2,22 +2,23 @@
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using UserManagement.Core.Data;
 
-namespace UserManagement.API.Helpers;
-
-public static class DbConfigurationExtension
+namespace UserManagement.API.Helpers
 {
-    public static void UseDbConfiguration(this IServiceCollection services, IConfiguration configuration)
+    public static class DbConfigurationExtension
     {
-        services.AddDbContext<UserManagementData>(options =>
+        public static void UseDbConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            options.EnableDetailedErrors()
-                .EnableSensitiveDataLogging()
-                .EnableServiceProviderCaching()
-                .UseSqlServer(configuration.GetConnectionString("Db"), options =>
-                {
-                    options.UseRelationalNulls();
-                    options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
-                }).ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuting, LogLevel.Debug)));
-        });
+            services.AddDbContext<UserManagementData>(options =>
+            {
+                options.EnableDetailedErrors()
+                    .EnableSensitiveDataLogging()
+                    .EnableServiceProviderCaching()
+                    .UseSqlServer(configuration.GetConnectionString("Db"), options =>
+                    {
+                        options.UseRelationalNulls();
+                        options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                    }).ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuting, LogLevel.Debug)));
+            });
+        }
     }
 }

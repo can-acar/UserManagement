@@ -1,10 +1,11 @@
-namespace UserManagement.Infrastructure.Commons;
-
-public class SuccessResponse<T> : BaseServiceResponse<T>
+namespace UserManagement.Infrastructure.Commons
 {
-    public SuccessResponse(T data)
+    public class SuccessResponse<T> : BaseServiceResponse<T>
     {
-        Success = true;
-        Data = data;
+        public SuccessResponse(T data)
+        {
+            Success = true;
+            Data = data;
+        }
     }
 }

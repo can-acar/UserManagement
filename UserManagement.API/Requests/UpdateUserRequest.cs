@@ -1,8 +1,9 @@
-namespace UserManagement.API.Requests;
-
-public class UpdateUserRequest
+namespace UserManagement.API.Requests
 {
-    public Guid UserId { get; set; }
-    public string Username { get; set; }
-    public string Email { get; set; }
+    public class UpdateUserRequest
+    {
+        public Guid UserId { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+    }
 }

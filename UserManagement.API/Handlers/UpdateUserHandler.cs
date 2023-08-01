@@ -1,20 +1,21 @@
-using UserManagement.Infrastructure.Commons;
+using UserManagement.Core.Commands;
 
-namespace UserManagement.API.Handlers;
-
-public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, ServiceResponse>
+namespace UserManagement.API.Handlers
 {
-    private readonly ILogger<UpdateUserHandler> _logger;
-    private readonly IPublishEndpoint _publishEndpoint;
-
-    public UpdateUserHandler(ILogger<UpdateUserHandler> logger, IPublishEndpoint publishEndpoint)
+    public class UpdateUserHandler : IRequestHandler<UpdateUserCommand, ServiceResponse>
     {
-        _logger = logger;
-        _publishEndpoint = publishEndpoint;
-    }
+        private readonly ILogger<UpdateUserHandler> _logger;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-    public Task<ServiceResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
-    {
-        throw new NotImplementedException();
+        public UpdateUserHandler(ILogger<UpdateUserHandler> logger, IPublishEndpoint publishEndpoint)
+        {
+            _logger = logger;
+            _publishEndpoint = publishEndpoint;
+        }
+
+        public Task<ServiceResponse> Handle(UpdateUserCommand request, CancellationToken cancellationToken)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

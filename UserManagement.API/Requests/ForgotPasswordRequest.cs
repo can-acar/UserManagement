@@ -1,6 +1,7 @@
-namespace UserManagement.API.Requests;
-
-public class ForgotPasswordRequest
+namespace UserManagement.API.Requests
 {
-    public string Email { get; set; }
+    public class ForgotPasswordRequest
+    {
+        public string Email { get; set; }
+    }
 }

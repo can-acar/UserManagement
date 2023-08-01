@@ -1,29 +1,31 @@
 ﻿using UserManagement.API.Requests;
+using UserManagement.Core.Queries;
 
-namespace UserManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class LoginController : ControllerBase
+namespace UserManagement.API.Controllers
 {
-    private readonly ILogger<LoginController> _logger;
-    private readonly IMediator _mediator;
-
-    public LoginController(IMediator mediator, ILogger<LoginController> logger)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class LoginController : ControllerBase
     {
-        _mediator = mediator;
-        _logger = logger;
-    }
+        private readonly ILogger<LoginController> _logger;
+        private readonly IMediator _mediator;
 
-    [HttpPost("", Name = "Login")]
-    public async Task<IActionResult> Login([FromBody] LoginRequest request)
-    {
-        _logger.LogInformation("Login request received with username: {Username}", request.Username);
+        public LoginController(IMediator mediator, ILogger<LoginController> logger)
+        {
+            _mediator = mediator;
+            _logger = logger;
+        }
 
-        var token = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
+        [HttpPost("", Name = "Login")]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        {
+            _logger.LogInformation("Login request received with username: {Username}", request.Username);
 
-        _logger.LogInformation("Login request completed successfully with username: {Username}", request.Username);
+            var token = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
 
-        return Ok(token);
+            _logger.LogInformation("Login request completed successfully with username: {Username}", request.Username);
+
+            return Ok(token);
+        }
     }
 }

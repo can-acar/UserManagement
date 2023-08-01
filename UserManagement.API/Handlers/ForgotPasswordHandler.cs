@@ -1,37 +1,38 @@
-﻿using UserManagement.API.Services;
+﻿using UserManagement.Core.Commands;
 using UserManagement.Core.Interfaces;
-using UserManagement.Infrastructure.Commons;
+using UserManagement.Core.Services;
 
-namespace UserManagement.API.Handlers;
-
-public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, ServiceResponse>
+namespace UserManagement.API.Handlers
 {
-    private ILogger<ForgotPasswordHandler> _logger;
-    private IPublishEndpoint _publishEndpoint;
-    private IIdentityService _identityService;
-
-    public ForgotPasswordHandler(ILogger<ForgotPasswordHandler> logger, IPublishEndpoint publishEndpoint, IIdentityService identityService)
+    public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, ServiceResponse>
     {
-        _logger = logger;
-        _publishEndpoint = publishEndpoint;
-        _identityService = identityService;
-    }
+        private ILogger<ForgotPasswordHandler> _logger;
+        private IPublishEndpoint _publishEndpoint;
+        private IIdentityService _identityService;
 
-    public async Task<ServiceResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
-    {
-        _logger.LogInformation("Forgot password request received with email: {Email}", request.Email);
-
-        await _identityService.ForgotPassword(request.Email);
-
-        _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
-
-        await _publishEndpoint.Publish<IActiveUserEvent>(new
+        public ForgotPasswordHandler(ILogger<ForgotPasswordHandler> logger, IPublishEndpoint publishEndpoint, IIdentityService identityService)
         {
-            Username = request.Email,
-            Password = request.Email,
-            Email = request.Email
-        }, cancellationToken);
+            _logger = logger;
+            _publishEndpoint = publishEndpoint;
+            _identityService = identityService;
+        }
 
-        return await Task.FromResult(new ServiceResponse());
+        public async Task<ServiceResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Forgot password request received with email: {Email}", request.Email);
+
+            await _identityService.ForgotPassword(request.Email);
+
+            _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
+
+            await _publishEndpoint.Publish<IUserActiveEvent>(new
+            {
+                Username = request.Email,
+                Password = request.Email,
+                Email = request.Email
+            }, cancellationToken);
+
+            return await Task.FromResult(new ServiceResponse());
+        }
     }
 }

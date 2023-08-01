@@ -1,78 +1,83 @@
 ﻿using UserManagement.API.Requests;
+using UserManagement.Core.Commands;
 
-namespace UserManagement.API.Controllers;
-
-[ApiController]
-[Route("api/[controller]")]
-public class UserController : ControllerBase
+namespace UserManagement.API.Controllers
 {
-    private readonly IMediator _mediator;
-    private readonly ILogger<UserController> _logger;
-
-    public UserController(IMediator mediator, ILogger<UserController> logger)
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
     {
-        _mediator = mediator;
-        _logger = logger;
-    }
+        private readonly IMediator _mediator;
+        private readonly ILogger<UserController> _logger;
 
-
-    [HttpPost("register")]
-    public async Task<IActionResult> Register([FromBody] CreateUserRequest request)
-    {
-        _logger.LogInformation("Register request received with username: {Username}, Detail:{@request}", request.Username, request);
-
-        var result = await _mediator.Send(new CreateUserCommand(request.Username, request.Password, request.Email));
-
-        _logger.LogInformation("Register request completed successfully with username: {Username}", request.Username);
-
-        return Ok(result);
-    }
-
-
-    [HttpPost("update")]
-    [Authorize] // Implement JWT authentication for this endpoint
-    public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserRequest request)
-    {
-        try
+        public UserController(IMediator mediator, ILogger<UserController> logger)
         {
-            var result = await _mediator.Send(new UpdateUserCommand(request.UserId, request.Username, request.Email));
+            _mediator = mediator;
+            _logger = logger;
+        }
+
+
+        [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> Register([FromBody] CreateUserRequest request)
+        {
+            _logger.LogInformation("Register request received with username: {Username}, Detail:{@request}", request.Username, request);
+
+            var result = await _mediator.Send(new CreateUserCommand(request.Username, request.Password, request.Email));
+
+            _logger.LogInformation("Register request completed successfully with username: {Username}", request.Username);
 
             return Ok(result);
         }
-        catch (Exception ex)
-        {
-            return BadRequest(ex.Message);
-        }
-    }
 
-    [HttpPost("update-password")]
-    [Authorize] // Implement JWT authentication for this endpoint
-    public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
-    {
-        try
-        {
-            await _mediator.Send(new UpdateUserPasswordCommand(request.UserId, request.NewPassword));
 
-            return Ok("Password updated successfully.");
-        }
-        catch (Exception ex)
+        [HttpPost("update")]
+        [Authorize] // Implement JWT authentication for this endpoint
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserRequest request)
         {
-            return BadRequest(ex.Message);
-        }
-    }
+            try
+            {
+                var result = await _mediator.Send(new UpdateUserCommand(request.UserId, request.Username, request.Email));
 
-    [HttpPost("deactivate")]
-    [Authorize] // Implement JWT authentication for this endpoint
-    public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
-    {
-        try
-        {
-            await _mediator.Send(new DeactivateUserAccountCommand(request.UserId));
-            return Ok("Account deactivated successfully.");
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
-        catch (Exception ex)
+
+        [HttpPost("update-password")]
+        [Authorize] // Implement JWT authentication for this endpoint
+        public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
         {
-            return BadRequest(ex.Message);
+            try
+            {
+                await _mediator.Send(new UpdateUserPasswordCommand(request.UserId, request.NewPassword));
+
+                return Ok("Password updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPost("deactivate")]
+        [Authorize] // Implement JWT authentication for this endpoint
+        public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
+        {
+            try
+            {
+                await _mediator.Send(new DeactivateUserAccountCommand(request.UserId));
+                return Ok("Account deactivated successfully.");
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
     }
 }

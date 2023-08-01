@@ -47,4 +47,8 @@
     <ItemGroup>
       <Folder Include="Migrations\" />
     </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\UserManagement.Infrastructure\UserManagement.Infrastructure.csproj" />
+    </ItemGroup>
 </Project>

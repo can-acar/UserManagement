@@ -1,10 +1,11 @@
-﻿namespace UserManagement.API.Helpers;
-
-public static class MediatrCongfigurationExtension
+﻿namespace UserManagement.API.Helpers
 {
-    public static void UseMediatrConfiguration(this IServiceCollection services, ConfigurationManager configurationManager)
+    public static class MediatrCongfigurationExtension
     {
-        var assemblies = Assembly.GetExecutingAssembly();
-        services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(assemblies); });
+        public static void UseMediatrConfiguration(this IServiceCollection services, IConfiguration configurationManager)
+        {
+            var assemblies = Assembly.GetExecutingAssembly();
+            services.AddMediatR(cfg => { cfg.RegisterServicesFromAssembly(assemblies); });
+        }
     }
 }

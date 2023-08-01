@@ -1,11 +1,12 @@
-﻿namespace UserManagement.Infrastructure;
-
-// MockMailProvider.cs
-public class MockMailProvider : IMockMailProvider
+﻿namespace UserManagement.Infrastructure
 {
-    public void SendRegistrationConfirmation(string email, string activationLink)
+    // MockMailProvider.cs
+    public class MockMailProvider : IMockMailProvider
     {
-        // Instead of sending an actual email, log the activation link for testing
-        Console.WriteLine($"Activation link for {email}: {activationLink}");
+        public void SendRegistrationConfirmation(string email, string activationLink)
+        {
+            // Instead of sending an actual email, log the activation link for testing
+            Console.WriteLine($"Activation link for {email}: {activationLink}");
+        }
     }
 }

@@ -1,6 +1,7 @@
-namespace UserManagement.Infrastructure;
-
-public interface IMockMailProvider
+namespace UserManagement.Infrastructure
 {
-    void SendRegistrationConfirmation(string email, string activationLink);
+    public interface IMockMailProvider
+    {
+        void SendRegistrationConfirmation(string email, string activationLink);
+    }
 }

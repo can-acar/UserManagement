@@ -1,14 +1,15 @@
-namespace UserManagement.Infrastructure.Commons;
-
-public class BaseService
+namespace UserManagement.Infrastructure.Commons
 {
-    public Task<ServiceResponse> Success(string message = null)
+    public class BaseService
     {
-        throw new NotImplementedException();
-    }
+        public Task<ServiceResponse> Success(string message = null)
+        {
+            throw new NotImplementedException();
+        }
 
-    public static ServiceResponse Error(string error, string message = null)
-    {
-        throw new NotImplementedException();
+        public static ServiceResponse Error(string error, string message = null)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
