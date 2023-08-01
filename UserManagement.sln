@@ -11,7 +11,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{FEC46016-2603-416C-BC61-9EC3C24023F5}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose.yml = docker-compose.yml
-		rabbitmq\rabbitmq.json = rabbitmq\rabbitmq.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UserManagement.Saga", "UserManagement.Saga\UserManagement.Saga.csproj", "{879FB5FA-FA4E-4E49-AC08-8F020D41801F}"
