@@ -15,3 +15,5 @@ riderModule.iml
 /logstash/
 /docker/
 **/esdata/*
+**/eslogs/*
+**/logs/
