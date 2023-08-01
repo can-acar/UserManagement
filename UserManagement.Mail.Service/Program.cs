@@ -49,17 +49,6 @@ builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
 
 var app = builder.Build();
 
-
-app.UseHealthChecks("/health", new HealthCheckOptions {Predicate = _ => true});
-app.UseHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse});
-app.MapHealthChecks("/health/live", new HealthCheckOptions() {Predicate = _ => false}); // Exclude all checks and return a 200-Ok
-app.MapHealthChecks("/health/ready", new HealthCheckOptions() {Predicate = (check) => check.Tags.Contains("ready")});
-
-app.UseSerilogRequestLogging();
-
-
-app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
-
 try
 {
     app.Run();
