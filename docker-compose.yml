@@ -18,7 +18,7 @@
     image: mailservice
     build:
       context: .
-      dockerfile: Mail.Service/Dockerfile
+      dockerfile: UserManagement.Mail.Service/Dockerfile
     ports:
       - "5002:80"
     networks:
@@ -66,7 +66,7 @@
     networks:
       - rabbitmq_go_net
     hostname: local-queue
-    command: ["bash", "-c", "rabbitmq-server"]
+    command: [ "bash", "-c", "rabbitmq-server" ]
 
   elastic_search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0

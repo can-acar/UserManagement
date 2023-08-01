@@ -37,12 +37,12 @@ namespace UserManagement.API.Handlers
             }, cancellationToken);
 
 
-            await _busControl.Publish<UserCreateEvent>(new
-            {
-                Username = command.Username,
-                Password = command.Password,
-                Email = command.Email
-            }, cancellationToken);
+            // await _busControl.Publish<UserCreateEvent>(new
+            // {
+            //     Username = command.Username,
+            //     Password = command.Password,
+            //     Email = command.Email
+            // }, cancellationToken);
 
 
             _logger.LogInformation("[EXECUTED:SUCCESS]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
