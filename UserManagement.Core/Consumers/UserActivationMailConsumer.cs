@@ -18,9 +18,12 @@ namespace UserManagement.Core.Consumers
         }
 
 
-        public Task Consume(ConsumeContext<IUserRegisterActivateMailSendEvent> context)
+        public async Task Consume(ConsumeContext<IUserRegisterActivateMailSendEvent> context)
         {
             _logger.LogInformation("Sending activation mail to {Email}", context.Message.Email);
+
+            await _mediator.Send(new ActivateUserAccountCommand(context.Message.Email, context.Message.Username, context.Message.ActivationCode));
+
 
             // const string smtpServer = "localhost";
             // var smtpPort = 1025;
@@ -68,9 +71,7 @@ namespace UserManagement.Core.Consumers
             //     Console.WriteLine("E-posta gönderirken bir hata oluştu: " + ex.Message);
             // }
 
-            return Task.CompletedTask;
+            await Task.CompletedTask;
         }
-
-      
     }
 }

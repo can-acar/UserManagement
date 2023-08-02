@@ -9,6 +9,8 @@ namespace UserManagement.Saga
         public string Email { get; set; }
         public string Password { get; set; }
 
+        public string ActivationCode { get; set; }
+
         public int Version { get; set; }
     }
 }

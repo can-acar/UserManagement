@@ -15,15 +15,17 @@ namespace UserManagement.Core.Services
         private readonly ILogger<UserService> _logger;
         private readonly IUserRepository _userRepository;
         private readonly PasswordHasher<User> _passwordHasher;
+        private readonly PasswordHasher<UserActivation> _passwordHasherActivation;
 
         public UserService(ILogger<UserService> logger, IUserRepository userRepository)
         {
             _logger = logger;
             _userRepository = userRepository;
+            _passwordHasherActivation = new PasswordHasher<UserActivation>();
             _passwordHasher = new PasswordHasher<User>();
         }
 
-        public async Task<ServiceResponse> CreateUser(CreateUserCommand user)
+        public async Task<(string, ServiceResponse)> CreateUser(CreateUserCommand user)
         {
             _logger.LogInformation("[EXECUTING]UserService.CreateUser: {Username},Detail:{@user}", user.Username, user);
 
@@ -40,21 +42,32 @@ namespace UserManagement.Core.Services
             }
 
             var hashedPassword = _passwordHasher.HashPassword(new User(), user.Password);
+            var activationCode = Guid.NewGuid().ToString();
+            var hashedActivationCode = _passwordHasherActivation.HashPassword(new UserActivation(), activationCode);
 
-            var newUser = await _userRepository.CreateUser(new User
+            var tmpUser = new User
             {
                 Username = user.Username,
                 Email = user.Email,
-                Password = hashedPassword
+                Password = hashedPassword,
+                UserActivations = new List<UserActivation>()
+            };
+
+            tmpUser.UserActivations.Add(new UserActivation
+            {
+                ActivationCode = hashedActivationCode,
+                ExpirationDate = DateTime.Now.AddDays(1)
             });
+
+            var newUser = await _userRepository.CreateUser(tmpUser);
 
             _logger.LogInformation("[EXECUTED:SUCCESS]UserService.CreateUser: {Username},Detail:{@user}", user.Username, newUser);
 
-            return await ServiceResponse.SuccessAsync("User created successfully.", new
+            return (hashedActivationCode, await ServiceResponse.SuccessAsync("User created successfully.", new
             {
                 Username = newUser.Username,
                 Email = newUser.Email
-            });
+            }));
         }
 
         public Task UpdateProfile(Guid userId, string username, string email)

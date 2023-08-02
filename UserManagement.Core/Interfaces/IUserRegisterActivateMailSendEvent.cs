@@ -6,5 +6,5 @@ public interface IUserRegisterActivateMailSendEvent
     string Username { get; }
     string Email { get; }
 
-    string AktifasyonKodu { get; }
+    string ActivationCode { get; }
 }

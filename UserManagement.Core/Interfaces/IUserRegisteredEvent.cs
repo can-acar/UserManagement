@@ -7,4 +7,5 @@ public interface IUserRegisteredEvent
     string Email { get; }
 
     string Password { get; }
+    string ActivationCode { get; set; }
 }

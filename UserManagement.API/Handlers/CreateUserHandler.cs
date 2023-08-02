@@ -13,7 +13,6 @@ namespace UserManagement.API.Handlers
 {
     public class CreateUserHandler : IRequestHandler<CreateUserCommand, ServiceResponse>
     {
-       
         private readonly ILogger<CreateUserHandler> _logger;
         private readonly IPublishEndpoint _publishEndpoint;
         private readonly IBusControl _busControl;
@@ -35,14 +34,15 @@ namespace UserManagement.API.Handlers
             // {
             _logger.LogInformation("[EXECUTING]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
 
-            var result = await _userService.CreateUser(command);
+            var (activationCode, result) = await _userService.CreateUser(command);
 
             await _publishEndpoint.Publish<IUserRegisteredEvent>(new UserRegisteredEvent
             {
                 UserId = Guid.NewGuid(),
                 Username = command.Username,
                 Password = command.Password,
-                Email = command.Email
+                Email = command.Email,
+                ActivationCode = activationCode
             }, cancellationToken);
 
 

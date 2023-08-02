@@ -38,8 +38,9 @@ services.AddOptions();
 services.AddHealthChecks();
 services.UseServicesConfiguration(configuration);
 services.UseMassTransitConfiguration(configuration);
+services.UseMediatrConfiguration(configuration);
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "Healtly!");
 
 app.Run();
