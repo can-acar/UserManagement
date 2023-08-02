@@ -2,7 +2,7 @@
 
 namespace UserManagement.Core.Events
 {
-    public class UserCreateEvent : CorrelatedBy<Guid>
+    public class UserCreateEvent 
     {
         public Guid CorrelationId { get; set; }
         public Guid UserId { get; set; }

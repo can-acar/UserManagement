@@ -1,7 +1,6 @@
 ﻿using UserManagement.Core.Consumers;
 
-
-namespace UserManagement.API.Helpers
+namespace UserManagement.Saga.Helpers
 {
     public static class MassTransitConfigurationExtension
     {

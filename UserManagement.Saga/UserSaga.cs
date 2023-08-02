@@ -39,12 +39,17 @@ namespace UserManagement.Saga
                     .Then(UserAddedHandler)
                     .ThenAsync(context => Console.Out.WriteLineAsync($"User Created:{context.Message.UserId}"))
                     .TransitionTo(UserCreatedState)
-                    .Publish(context => new SendUserActivisionMailCommand(context.Message.UserId, context.Message.Email)),
+                    .Publish(context => new SendUserActivisionMailCommand(context.Message.UserId, context.Message.Email))
+                //, When(UserMailSendingState)
+                //     .Then(context => Console.WriteLine($"Activation email received for user: {context.Saga.Email}"))
+                //     .TransitionTo(UserMailSentState)
+            );
+            
+            During(UserCreatedState,
                 When(UserMailSendingState)
                     .Then(context => Console.WriteLine($"Activation email received for user: {context.Saga.Email}"))
                     .TransitionTo(UserMailSentState)
             );
-
 
             During(UserMailSentState,
                 When(UserMailSendingState)
