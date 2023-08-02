@@ -1065,9 +1065,9 @@ obj/
 riderModule.iml
 /_ReSharper.Caches/
 /kibana/
-/.idea/
-/.vscode/
-/.vs/
+.idea/
+.vscode/
+.vs/
 rabbitmq/
 rabbitmq/mnesia/
 sqlserver/
