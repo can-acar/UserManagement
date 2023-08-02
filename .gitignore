@@ -1,25 +1,4 @@
-bin/
-obj/
-/packages/
-riderModule.iml
-/_ReSharper.Caches/
-/kibana/
-/.idea/
-/.vscode/
-/.vs/
-!/rabbitmq/
-/rabbitmq/**/
-rabbitmq/
-/sqlserver/
-/redis/
-/consul/
-/consul-template/
-/logstash/
-/docker/
-**/esdata/*
-**/eslogs/*
-**/logs/
-/esdata/**
+
 # Created by https://www.toptal.com/developers/gitignore/api/vs,rider,jetbrains,jetbrains+all,webstorm,pycharm,pycharm+iml,pycharm+all,visualstudiocode,visualstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=vs,rider,jetbrains,jetbrains+all,webstorm,pycharm,pycharm+iml,pycharm+all,visualstudiocode,visualstudio
 
@@ -1080,3 +1059,24 @@ FodyWeavers.xsd
 # Additional files built by Visual Studio
 
 # End of https://www.toptal.com/developers/gitignore/api/vs,rider,jetbrains,jetbrains+all,webstorm,pycharm,pycharm+iml,pycharm+all,visualstudiocode,visualstudio
+bin/
+obj/
+/packages/
+riderModule.iml
+/_ReSharper.Caches/
+/kibana/
+/.idea/
+/.vscode/
+/.vs/
+rabbitmq/
+rabbitmq/mnesia/
+sqlserver/
+redis/
+consul/
+consul-template/
+logstash/
+docker/
+**/esdata/*
+**/eslogs/*
+**/logs/
+esdata/**
