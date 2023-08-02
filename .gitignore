@@ -1089,3 +1089,9 @@ rabbitmq/mnesia/rabbit@local-queue/
 *.DCD
 *.LOG
 *.LOG
+rabbitmq/mnesia/rabbit@local-queue/DECISION_TAB.LOG
+rabbitmq/mnesia/rabbit@local-queue/LATEST.LOG
+rabbitmq/mnesia/rabbit@local-queue/rabbit_durable_exchange.DCD
+rabbitmq/mnesia/rabbit@local-queue/rabbit_durable_queue.DCD
+rabbitmq/mnesia/rabbit@local-queue/rabbit_durable_route.DCD
+rabbitmq/mnesia/rabbit@local-queue/rabbit_durable_route.DCL
