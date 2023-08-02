@@ -1081,3 +1081,11 @@ docker/
 **/logs/
 **/esdata
 **/mnesia
+rabbitmq/mnesia/rabbit@local-queue/
+*.LOG
+*.DCL
+*.DCD
+*.DCD
+*.DCD
+*.LOG
+*.LOG
