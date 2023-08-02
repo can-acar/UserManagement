@@ -24,7 +24,7 @@ Log.Logger = new LoggerConfiguration()
     .Enrich.WithProperty("ApplicationName", "UserManagement.API")
     .Enrich.FromLogContext()
     //.WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
-    .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
     .WriteTo.Elasticsearch(new ElasticsearchSinkOptions
     {
         AutoRegisterTemplate = true,

@@ -1,6 +1,4 @@
-﻿using UserManagement.Core.Commands;
-using UserManagement.Core.Interfaces;
-using UserManagement.Core.Repositories;
+﻿using UserManagement.Core.Interfaces;
 
 namespace UserManagement.Core.Consumers
 {

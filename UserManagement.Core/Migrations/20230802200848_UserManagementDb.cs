@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace UserManagement.Core.Migrations
 {
     /// <inheritdoc />
-    public partial class Usermanagement_1_0 : Migration
+    public partial class UserManagementDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -29,19 +29,42 @@ namespace UserManagement.Core.Migrations
                 {
                     table.PrimaryKey("PK_Users", x => x.Id);
                 });
-            
-            migrationBuilder.Sql(@"INSERT INTO [dbo].[Users] ([Username], [Email], [Password], [IsActive], [IsLocked], [IsDeleted], [CreatedAt], [UpdatedAt]) 
-                                   VALUES (N'admin',N'can.acar@windowslive.com', N'admin', 1, 0, 0, N'2023-08-01 06:33:43.0000000', NULL)");
-        
+
+            migrationBuilder.CreateTable(
+                name: "UserActivations",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ActivationCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ExpirationDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserActivations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_UserActivations_Users",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_UserActivations_UserId",
+                table: "UserActivations",
+                column: "UserId");
         }
-        
-        
- 
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.DropTable(name: "Users");
+            migrationBuilder.DropTable(
+                name: "UserActivations");
+
+            migrationBuilder.DropTable(
+                name: "Users");
         }
     }
 }

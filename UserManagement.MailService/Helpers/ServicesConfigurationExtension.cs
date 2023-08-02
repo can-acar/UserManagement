@@ -1,3 +1,5 @@
+using UserManagement.Core.Services;
+
 namespace UserManagement.MailService.Helpers
 {
     public static class ServicesConfigurationExtension
@@ -5,6 +7,8 @@ namespace UserManagement.MailService.Helpers
         public static void UseServicesConfiguration(this IServiceCollection services, IConfiguration configurationManager)
         {
             services.AddSingleton<RabbitMqOptions>();
+            services.AddSingleton<IEmailRenderService, EmailRenderService>();
+            services.AddSingleton<IMailProvider, MailProvider>();
             // services.AddSingleton<IIdentityService, IdentityService>();
             // services.AddScoped<IUserRepository, UserRepository>();
             // services.AddScoped<IUserService, UserService>();

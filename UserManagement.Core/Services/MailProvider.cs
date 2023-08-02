@@ -1,4 +1,5 @@
-﻿using System.Configuration;
+﻿using System.Net;
+using System.Net.Mail;
 using Microsoft.Extensions.Configuration;
 
 namespace UserManagement.Core.Services;
@@ -11,7 +12,7 @@ public class MailProvider : IMailProvider
     private readonly int _smtpPort;
     private readonly string _smtpUser;
     private readonly string _smtpPassword;
-    private SemaphoreSlim _semaphoreSlim = new(1, 1);
+    private readonly string _smtpFrom;
 
     public MailProvider(ILogger<MailProvider> logger, IConfiguration configuration)
     {
@@ -20,94 +21,90 @@ public class MailProvider : IMailProvider
         _smtpServer = _configuration["Mail:SmtpServer"];
         _smtpPort = Convert.ToInt32(_configuration["Mail:SmtpPort"]);
         _smtpUser = _configuration["Mail:SmtpUser"];
+        _smtpFrom = _configuration["Mail:SmtpFrom"];
         _smtpPassword = _configuration["Mail:SmtpPassword"];
     }
 
-    public void SendActivationMail(string username, string email, string activationCode, string activationLink, string companyName)
+
+    public Task SendMail(string to, string mail, string subject, string body)
     {
-        //var activationLink = $"https://example.com/activate?code={activationCode}";
-        var htmlTemplate = GetActivationEmailTemplate(username, activationLink, companyName);
-    }
+        try
+        {
+            _logger.LogInformation("Mail gönderiliyor.");
 
+            using var client = new SmtpClient(_smtpServer, _smtpPort);
+            client.UseDefaultCredentials = false;
+            client.Credentials = new NetworkCredential(_smtpUser, _smtpPassword);
+            client.EnableSsl = false;
 
-    private static string GetActivationEmailTemplate(string userName, string activationLink, string companyName)
-    {
-        // Mail içeriği şablonunu doldurarak HTML içeriğini oluşturma
-        var htmlTemplate = @"
-<!DOCTYPE html>
-<html lang='en'>
-<head>
-    <meta charset='UTF-8'>
-    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
-    <meta name='viewport' content='width=device-width, initial-scale=1.0'>
-    <title>Hesap Aktivasyonu</title>
- <style>
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-        }
-        .logo {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .logo img {
-            max-width: 150px;
-        }
-        .message {
-            padding: 15px;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-        }
-        .activation-link {
-            display: inline-block;
-            margin-top: 20px;
-            background-color: #007bff;
-            color: #fff;
-            text-decoration: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-        }
-        .footer {
-            margin-top: 30px;
-            text-align: center;
-            color: #888;
-        }
-    </style>
-</head>
-<body>
-    <div class='container'>
-        <div class='logo'>
-            <img src='https://example.com/logo.png' alt='Logo'>
-        </div>
-        <div class='message'>
-            <p>Merhaba [KULLANICI_AD],</p>
-            <p>Hesabınızı aktifleştirmek için aşağıdaki düğmeye tıklayın:</p>
-            <a class='activation-link' href='[AKTIVASYON_LINKI]'>Hesabımı Aktifleştir</a>
-        </div>
-        <div class='footer'>
-            <p>Eğer düğmeye tıklama ile ilgili bir problem yaşarsanız, aşağıdaki bağlantıyı tarayıcınızın adres çubuğuna kopyalayın:</p>
-            <p>[AKTIVASYON_LINKI]</p>
-            <p>Bu e-posta, [SIRKET_AD] tarafından otomatik olarak gönderilmiştir. Lütfen cevaplamayın.</p>
-        </div>
-    </div>
-</body>
-</html>";
+            using var message = new MailMessage();
+            message.From = new MailAddress(_smtpFrom, _smtpUser);
+            message.To.Add(new MailAddress(mail, to));
+            message.Subject = subject;
+            message.Body = body;
+            message.IsBodyHtml = true;
 
-        // Değişkenleri şablon içindeki değerlerle değiştirme
-        htmlTemplate = htmlTemplate.Replace("[KULLANICI_AD]", userName);
-        htmlTemplate = htmlTemplate.Replace("[AKTIVASYON_LINKI]", activationLink);
-        htmlTemplate = htmlTemplate.Replace("[SIRKET_AD]", companyName);
+            client.Send(message);
 
-        return htmlTemplate;
+            _logger.LogInformation("Mail gönderildi.");
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("Mail gönderilirken hata oluştu. Hata: {0}", e.Message);
+        }
+
+        return Task.CompletedTask;
     }
 }
 
 public interface IMailProvider
 {
+    Task SendMail(string to, string mail, string subject, string body);
 }
+
+
+// const string smtpServer = "localhost";
+// var smtpPort = 1025;
+//
+// // Mail gönderici bilgileri
+// var senderEmail = "hesap@aktivasyonu.com";
+// var senderPassword = "gonderen_sifre";
+// var senderName = "Hesap Aktivasyonu";
+//
+// // Mail alıcı bilgileri
+// var recipientEmail = "can.acar@windowslive.com";
+// var recipientName = "Can ACAR";
+//
+// // Mail başlık ve içeriği
+// var subject = "Hesap Aktivasyonu";
+// var activationLink = $"https://localhost:7041/user-activation/{context.Message.AktifasyonKodu}";
+// var htmlBody = GetActivationEmailTemplate(context.Message.Username, activationLink, "SoftRobotics");
+//
+// try
+// {
+//     // SMTP istemci oluşturma ve ayarlarını yapılandırma
+//     using (var smtpClient = new SmtpClient(smtpServer, smtpPort))
+//     {
+//         smtpClient.UseDefaultCredentials = false;
+//         smtpClient.Credentials = new NetworkCredential(senderEmail, senderPassword);
+//         smtpClient.EnableSsl = false;
+//
+//         // Mail oluşturma ve gönderme
+//         using (var mailMessage = new MailMessage())
+//         {
+//             mailMessage.From = new MailAddress(senderEmail, senderName);
+//             mailMessage.To.Add(new MailAddress(recipientEmail, recipientName));
+//             mailMessage.Subject = subject;
+//             mailMessage.Body = htmlBody;
+//             mailMessage.IsBodyHtml = true;
+//             smtpClient.Send(mailMessage);
+//         }
+//     }
+//
+//     Console.WriteLine("E-posta başarıyla gönderildi.");
+// }
+// catch (Exception ex)
+// {
+//     _logger.LogError(ex, "Error while sending activation mail to {Email}", context.Message.Email);
+//     Console.WriteLine("E-posta gönderirken bir hata oluştu: " + ex.Message);
+// }

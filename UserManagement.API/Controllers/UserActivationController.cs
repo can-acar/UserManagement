@@ -1,8 +1,8 @@
-﻿using UserManagement.API.Requests;
-using UserManagement.Core.Queries;
+﻿using UserManagement.Core.Commands;
 
 namespace UserManagement.API.Controllers
 {
+    [Controller]
     [Route("user-activation")]
     public class UserActivationController : ControllerBase
     {
@@ -15,12 +15,12 @@ namespace UserManagement.API.Controllers
             _mediator = mediator;
         }
 
-        [HttpPost("", Name = "ActivateUser")]
-        public async Task<IActionResult> Login([FromBody] LoginRequest request)
+        [HttpGet("{activationCode}", Name = "ActivateUser")]
+        public async Task<IActionResult> Login([FromRoute] string activationCode)
         {
             try
             {
-                var response = await _mediator.Send(new LoginUserQuery(request.Username, request.Password));
+                var response = await _mediator.Send(new ActivateUserCommand(activationCode));
 
                 return Ok(response);
             }

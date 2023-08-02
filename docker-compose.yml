@@ -1,13 +1,13 @@
 ﻿services:
   usermanagement_api:
-    image: usermanagement.api
+    image: user-management-api
     build:
       context: .
       dockerfile: UserManagement.API/Dockerfile
     ports:
       - "5001:80"
     depends_on:
-      - usermanagement_db
+      - user-management-db
       - rabbitmq
       - elastic_search
       - kibana
@@ -15,10 +15,10 @@
       - mock_smtp_server
 
   mail_service:
-    image: mailservice
+    image: mail_service
     build:
       context: .
-      dockerfile: UserManagement.Mail.Service/Dockerfile
+      dockerfile: UserManagement.MailService/Dockerfile
     ports:
       - "5002:80"
     networks:
@@ -27,9 +27,22 @@
     depends_on:
       - mock_smtp_server
       - rabbitmq
-      - usermanagement_db
+      - user-management-db
+  
+  saga_machine:
+    image: saga_machine
+    build:
+      context: .
+      dockerfile: UserManagement.Saga/Dockerfile
+    ports:
+      - "5003:80"
+    networks:
+      - backend
+      - public
+    depends_on:
+      - rabbitmq
 
-  usermanagement_db:
+  user-management-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       SA_PASSWORD: "db+123456"
@@ -45,7 +58,24 @@
     ports:
       - "1433:1433"
     volumes:
-      - ./sqlserver:/var/opt/sqlserver
+      - type: bind
+        source: ./sqlserver/data
+        target: /var/opt/sqlserver/data
+      - type: bind
+        source: ./sqlserver/backups
+        target: /var/opt/sqlserver/backups
+      - type: bind
+        source: ./sqlserver/logs
+        target: /var/opt/sqlserver/logs
+      - type: bind
+        source: ./sqlserver/data
+        target: /var/opt/mssql/data
+      - type: bind
+        source: ./sqlserver/backups
+        target: /var/opt/mssql/backups
+      - type: bind
+        source: ./sqlserver/logs
+        target: /var/opt/mssql/logs
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -102,7 +132,6 @@
       - elastic_search
       - log_stash
       - rabbitmq
-      - usermanagement_db
     networks:
       - backend
       - rabbitmq_go_net
@@ -161,8 +190,3 @@ networks:
       driver: default
       config:
         - subnet: 171.17.25.0/16
-  usermanagement.apı:
-    image: usermanagement.apı
-    build:
-      context: .
-      dockerfile: UserManagement.API/Dockerfile

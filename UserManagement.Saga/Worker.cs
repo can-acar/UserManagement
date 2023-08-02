@@ -1,4 +1,4 @@
-﻿namespace UserManagement.MailService
+﻿namespace UserManagement.Saga
 {
     public class Worker : IHostedService
     {

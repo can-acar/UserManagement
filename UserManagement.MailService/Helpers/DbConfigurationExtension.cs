@@ -8,7 +8,7 @@ namespace UserManagement.MailService.Helpers
     {
         public static void UseDbConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<UserManagementData>(options =>
+            services.AddDbContext<UserManagementContext>(options =>
             {
                 options.EnableDetailedErrors()
                     .EnableSensitiveDataLogging()
@@ -16,7 +16,9 @@ namespace UserManagement.MailService.Helpers
                     .UseSqlServer(configuration.GetConnectionString("Db"), options =>
                     {
                         options.UseRelationalNulls();
+                        
                         options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
+                        
                     }).ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuting, LogLevel.Debug)));
             });
         }

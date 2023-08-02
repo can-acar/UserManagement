@@ -33,7 +33,11 @@ namespace UserManagement.Infrastructure.Extensions
             where TConsumer : class, IConsumer
 
         {
-            Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) => { cfg.ReceiveEndpoint(queueName, ConfigureEndpoint<TConsumer>(config, context)); };
+            Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) =>
+            {
+                configurator.AddConsumer<TConsumer>();
+                cfg.ReceiveEndpoint(queueName, ConfigureEndpoint<TConsumer>(config, context));
+            };
 
             BuildBefore?.Add(action);
 
@@ -44,43 +48,45 @@ namespace UserManagement.Infrastructure.Extensions
         {
             Action<IBusFactoryConfigurator, IBusRegistrationContext> action = (cfg, context) =>
             {
+                //configurator.AddConsumer<TConsumer>();
+                
                 if (queueName != null)
                 {
-                    cfg.ReceiveEndpoint(queueName,
-                        ec =>
+                    cfg.ReceiveEndpoint(queueName, ec =>
+                    {
+                        ec.PrefetchCount = 16;
+
+                        ec.UseRetry(r =>
                         {
-                            ec.PrefetchCount = 16;
-
-                            ec.UseRetry(r =>
-                            {
-                                r.Handle<ArgumentNullException>(); // handle null argument exception olunca kuyrukta tekrar gönder
-                                r.Incremental(5, TimeSpan.FromMinutes(10),
-                                    TimeSpan.FromMinutes(10)); // 5 defa tekrar gönder
-                                r.Ignore(typeof(InvalidOperationException),
-                                    typeof(InvalidCastException)); // ignore exception
-                            });
-
-                            ec.UseMessageRetry(r => r.Immediate(5));
-
-                            ec.UseCircuitBreaker(c =>
-                            {
-                                c.TripThreshold = 15;
-                                c.ActiveThreshold = 10;
-                                c.ResetInterval = TimeSpan.FromMinutes(5);
-                                c.TrackingPeriod = TimeSpan.FromMinutes(1);
-                            });
-
-                            ec.UseRateLimit(1000, TimeSpan.FromMinutes(1));
-
-                            //ec.Consumer<TConsumer>(context);
-
-                            ec.ConfigureConsumer<TConsumer>(context); //, c => { c.UseRetry(r => r.Immediate(5)); });
+                            r.Handle<ArgumentNullException>(); // handle null argument exception olunca kuyrukta tekrar gönder
+                            r.Incremental(5, TimeSpan.FromMinutes(10),
+                                TimeSpan.FromMinutes(10)); // 5 defa tekrar gönder
+                            r.Ignore(typeof(InvalidOperationException),
+                                typeof(InvalidCastException)); // ignore exception
                         });
+
+                        ec.UseMessageRetry(r => r.Immediate(5));
+
+                        ec.UseCircuitBreaker(c =>
+                        {
+                            c.TripThreshold = 15;
+                            c.ActiveThreshold = 10;
+                            c.ResetInterval = TimeSpan.FromMinutes(5);
+                            c.TrackingPeriod = TimeSpan.FromMinutes(1);
+                        });
+
+                        ec.UseRateLimit(1000, TimeSpan.FromMinutes(1));
+
+                        //ec.Consumer<TConsumer>(context);
+
+                        ec.ConfigureConsumer<TConsumer>(context); //, c => { c.UseRetry(r => r.Immediate(5)); });
+                    });
                 }
                 else
                 {
                     var queueName = KebabCaseEndpointNameFormatter.Instance.SanitizeName(typeof(TConsumer).Name)
                         .Replace("consumer", "queue");
+
 
                     cfg.ReceiveEndpoint(queueName,
                         ec =>
@@ -128,6 +134,7 @@ namespace UserManagement.Infrastructure.Extensions
                 var queueName = KebabCaseEndpointNameFormatter.Instance.SanitizeName(typeof(TConsumer).Name)
                     .Replace("consumer", "queue");
 
+
                 cfg.ReceiveEndpoint(queueName, ConfigureEndpoint<TConsumer>(config, context));
             };
 
@@ -160,36 +167,35 @@ namespace UserManagement.Infrastructure.Extensions
             {
                 if (queueName != null)
                 {
-                    cfg.ReceiveEndpoint(queueName,
-                        ec =>
+                    cfg.ReceiveEndpoint(queueName, ec =>
+                    {
+                        ec.PrefetchCount = 16;
+
+                        ec.UseRetry(r =>
                         {
-                            ec.PrefetchCount = 16;
-
-                            ec.UseRetry(r =>
-                            {
-                                r.Handle<ArgumentNullException>(); // handle null argument exception olunca kuyrukta tekrar gönder
-                                r.Incremental(5, TimeSpan.FromMinutes(10),
-                                    TimeSpan.FromMinutes(10)); // 5 defa tekrar gönder
-                                r.Ignore(typeof(InvalidOperationException),
-                                    typeof(InvalidCastException)); // ignore exception
-                            });
-
-                            ec.UseMessageRetry(r => r.Immediate(5));
-
-                            ec.UseCircuitBreaker(c =>
-                            {
-                                c.TripThreshold = 15;
-                                c.ActiveThreshold = 10;
-                                c.ResetInterval = TimeSpan.FromMinutes(5);
-                                c.TrackingPeriod = TimeSpan.FromMinutes(1);
-                            });
-
-                            ec.UseRateLimit(1000, TimeSpan.FromMinutes(1));
-
-                            ec.Consumer<TConsumer>(context, c => { c.UseRetry(r => r.Immediate(5)); });
-
-                            ec.ConfigureConsumer<TConsumer>(context); //, c => { c.UseRetry(r => r.Immediate(5)); });
+                            r.Handle<ArgumentNullException>(); // handle null argument exception olunca kuyrukta tekrar gönder
+                            r.Incremental(5, TimeSpan.FromMinutes(10),
+                                TimeSpan.FromMinutes(10)); // 5 defa tekrar gönder
+                            r.Ignore(typeof(InvalidOperationException),
+                                typeof(InvalidCastException)); // ignore exception
                         });
+
+                        ec.UseMessageRetry(r => r.Immediate(5));
+
+                        ec.UseCircuitBreaker(c =>
+                        {
+                            c.TripThreshold = 15;
+                            c.ActiveThreshold = 10;
+                            c.ResetInterval = TimeSpan.FromMinutes(5);
+                            c.TrackingPeriod = TimeSpan.FromMinutes(1);
+                        });
+
+                        ec.UseRateLimit(1000, TimeSpan.FromMinutes(1));
+
+                        ec.Consumer<TConsumer>(context, c => { c.UseRetry(r => r.Immediate(5)); });
+
+                        ec.ConfigureConsumer<TConsumer>(context); //, c => { c.UseRetry(r => r.Immediate(5)); });
+                    });
                 }
                 else
                 {

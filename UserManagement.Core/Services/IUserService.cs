@@ -8,5 +8,6 @@ namespace UserManagement.Core.Services
         Task UpdateProfile(Guid userId, string username, string email);
 
         Task UpdatePassword(Guid userId, string newPassword);
+        Task<ServiceResponse> ActivateUser(string activationCode);
     }
 }

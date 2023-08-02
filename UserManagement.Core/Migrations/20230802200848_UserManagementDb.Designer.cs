@@ -11,9 +11,9 @@ using UserManagement.Core.Data;
 
 namespace UserManagement.Core.Migrations
 {
-    [DbContext(typeof(UserManagementData))]
-    [Migration("20230801063343_Usermanagement_1_0")]
-    partial class Usermanagement_1_0
+    [DbContext(typeof(UserManagementContext))]
+    [Migration("20230802200848_UserManagementDb")]
+    partial class UserManagementDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -25,7 +25,35 @@ namespace UserManagement.Core.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("UserManagement.Core.Models.User", b =>
+            modelBuilder.Entity("UserManagement.Core.Models.UserActivations", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ActivationCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("ExpirationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex(new[] { "UserId" }, "IX_UserActivations_UserId");
+
+                    b.ToTable("UserActivations");
+                });
+
+            modelBuilder.Entity("UserManagement.Core.Models.Users", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -64,6 +92,22 @@ namespace UserManagement.Core.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("UserManagement.Core.Models.UserActivations", b =>
+                {
+                    b.HasOne("UserManagement.Core.Models.Users", "User")
+                        .WithMany("UserActivations")
+                        .HasForeignKey("UserId")
+                        .IsRequired()
+                        .HasConstraintName("FK_UserActivations_Users");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserManagement.Core.Models.Users", b =>
+                {
+                    b.Navigation("UserActivations");
                 });
 #pragma warning restore 612, 618
         }

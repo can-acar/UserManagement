@@ -1,4 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Linq.Expressions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
 using UserManagement.Core.Data;
 using UserManagement.Core.Models;
 
@@ -6,31 +8,78 @@ namespace UserManagement.Core.Repositories
 {
     public class UserRepository : IUserRepository
     {
-        private readonly UserManagementData _userManagementData;
+        private readonly UserManagementContext _db;
+        private IDbContextTransaction _transaction;
 
-        public UserRepository(UserManagementData userManagementData)
+        public UserRepository(UserManagementContext context)
         {
-            _userManagementData = userManagementData;
-        }
-
-  
-        public async Task<bool> HasUser(User user)
-        {
-            return await _userManagementData.Users.AnyAsync(x => x.Username == user.Username || x.Email == user.Email);
+            _db = context;
         }
 
 
-        public async Task<User> CreateUser(User user)
+        public async Task<bool> HasUser(Users user)
         {
-            await _userManagementData.Database.BeginTransactionAsync();
+            return await _db.Users.AnyAsync(x => x.Username == user.Username || x.Email == user.Email);
+        }
 
-            await _userManagementData.Users.AddAsync(user);
+        public Task UpdateUserStatus(UserActivations user)
+        {
+            _db.UserActivations.Update(user);
 
-            await _userManagementData.SaveChangesAsync();
+            _db.Users.Update(user.User);
 
-            await _userManagementData.Database.CommitTransactionAsync();
+            return _db.SaveChangesAsync();
+        }
+
+        public async Task<IDbContextTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default)
+        {
+            _transaction = await _db.Database.BeginTransactionAsync(cancellationToken);
+
+            return _transaction;
+        }
+
+        public async Task CommitAsync()
+        {
+            await _transaction.CommitAsync();
+        }
+
+        public async Task RollbackAsync()
+        {
+            await _transaction.RollbackAsync();
+        }
+
+        public async Task<UserActivations> GetUserFromActivationCode(string code)
+        {
+            return await _db.UserActivations.Where(p => p.ActivationCode == code)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync();
+        }
+
+
+        public async Task<Users> CreateUser(Users user)
+        {
+            await _db.Database.BeginTransactionAsync();
+
+            await _db.Users.AddAsync(user);
+
+            await _db.SaveChangesAsync();
+
+            await _db.Database.CommitTransactionAsync();
 
             return user;
+        }
+
+
+        public async Task<bool> HasActivationCode(string activationCode)
+        {
+            return await _db.UserActivations.AnyAsync(x => x.ActivationCode == activationCode);
+        }
+
+        public Task<bool> HasExpiredCode(string activationCode)
+        {
+            //return await _db.UserActivations.AnyAsync(x => x.ActivationCode == activationCode);
+            var currentDate = DateTime.Now;
+            return _db.UserActivations.AnyAsync(x => x.ActivationCode == activationCode && x.ExpirationDate < currentDate);
         }
     }
 }

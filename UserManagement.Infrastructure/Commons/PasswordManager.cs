@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Identity;
-
-namespace UserManagement.Infrastructure.Commons;
+﻿namespace UserManagement.Infrastructure.Commons;
 
 public class PasswordManager
 {

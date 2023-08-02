@@ -1,7 +1,4 @@
-﻿using UserManagement.Core.Consumers;
-using UserManagement.Infrastructure.Extensions;
-
-namespace UserManagement.Saga.Helpers
+﻿namespace UserManagement.Saga.Helpers
 {
     public static class MassTransitConfigurationExtension
     {

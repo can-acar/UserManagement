@@ -8,7 +8,7 @@ namespace UserManagement.API.Helpers
     {
         public static void UseDbConfiguration(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<UserManagementData>(options =>
+            services.AddDbContext<UserManagementContext>(options =>
             {
                 options.EnableDetailedErrors()
                     .EnableSensitiveDataLogging()
