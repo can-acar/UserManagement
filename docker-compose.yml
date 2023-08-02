@@ -128,11 +128,11 @@
     command: logstash -f /etc/logstash/conf.d/logstash.conf
 
   mock_smtp_server:
-    image: soulteary/maildev
+    image: maildev/maildev
     container_name: fake_mail_server
     ports:
       - "1080:1080"
-      - "25:25"
+      - "1025:1025"
     networks:
       - backend
     restart: always
