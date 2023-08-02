@@ -25,7 +25,7 @@ namespace UserManagement.API.Handlers
 
             _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
 
-            await _publishEndpoint.Publish<IUserActiveEvent>(new
+            await _publishEndpoint.Publish<IUserRegisteredEvent>(new
             {
                 Username = request.Email,
                 Password = request.Email,

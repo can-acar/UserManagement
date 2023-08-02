@@ -1,21 +1,21 @@
-﻿using UserManagement.Core.Events;
+﻿using UserManagement.Core.Commands;
+using UserManagement.Core.Interfaces;
 using UserManagement.Core.Repositories;
 
 namespace UserManagement.Core.Consumers
 {
-    public class UserCreateConsumer : IConsumer<UserCreateEvent>
+    public class UserCreateConsumer : IConsumer<IUserRegisteredEvent>
     {
         private readonly ILogger<UserCreateConsumer> _logger;
-        private readonly IUserRepository _userRepository;
 
-        public UserCreateConsumer(ILogger<UserCreateConsumer> logger, IUserRepository userRepository)
+
+        public UserCreateConsumer(ILogger<UserCreateConsumer> logger)
         {
             _logger = logger;
-            _userRepository = userRepository;
         }
 
 
-        public Task Consume(ConsumeContext<UserCreateEvent> context)
+        public Task Consume(ConsumeContext<IUserRegisteredEvent> context)
         {
             _logger.LogInformation("Creating user {Email}", context.Message.Email);
 

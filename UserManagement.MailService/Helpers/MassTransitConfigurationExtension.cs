@@ -19,7 +19,10 @@ namespace UserManagement.MailService.Helpers
                     });
 
                     // Event türlerini ve consumer'ları ilişkilendirme
-                    x.ReceiveEndpoint("user_action_mail", ep => { ep.ConfigureConsumer<UserActivationMailConsumer>(ctx); });
+                    x.ReceiveEndpoint("user-register-activation-queue", ep =>
+                    {
+                        ep.ConfigureConsumer<UserActivationMailConsumer>(ctx);
+                    });
                 });
             });
         }

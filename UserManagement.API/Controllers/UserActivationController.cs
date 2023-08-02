@@ -3,8 +3,7 @@ using UserManagement.Core.Queries;
 
 namespace UserManagement.API.Controllers
 {
-    [ApiController]
-    [Route("api/[controller]")]
+    [Route("user-activation")]
     public class UserActivationController : ControllerBase
     {
         private readonly ILogger<UserActivationController> _logger;

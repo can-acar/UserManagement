@@ -1,4 +1,5 @@
 ﻿using UserManagement.Core.Consumers;
+using UserManagement.Infrastructure.Extensions;
 
 namespace UserManagement.Saga.Helpers
 {
@@ -8,7 +9,8 @@ namespace UserManagement.Saga.Helpers
         {
             services.AddMassTransit(cfg =>
             {
-                cfg.AddConsumer<UserCreateConsumer>();
+                var userSaga = new UserSaga();
+                var repository = new InMemorySagaRepository<UserSagaState>();
 
                 cfg.UsingRabbitMq((ctx, x) =>
                 {
@@ -18,12 +20,15 @@ namespace UserManagement.Saga.Helpers
                         h.Password(configuration["RabbitMQ:Password"]);
                     });
 
-                    // Event türlerini ve consumer'ları ilişkilendirme
-                    x.ReceiveEndpoint("user", ep =>
+                    x.ReceiveEndpoint("user-saga", ep =>
                     {
-                        ep.Consumer<UserCreateConsumer>(ctx);
+                        ep.PrefetchCount = 8;
+                        ep.UseMessageRetry(r => r.Interval(5, 100));
+                        ep.StateMachineSaga(userSaga, repository);
                     });
                 });
+
+              
             });
         }
     }

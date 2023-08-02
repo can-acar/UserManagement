@@ -46,6 +46,7 @@ services.AddCors();
 services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
+services.AddDataProtection();
 
 
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });

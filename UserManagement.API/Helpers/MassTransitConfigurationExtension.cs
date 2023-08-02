@@ -20,9 +20,9 @@ namespace UserManagement.API.Helpers
                     });
 
                     // Event türlerini ve consumer'ları ilişkilendirme
-                    x.ReceiveEndpoint("user", ep =>
+                    x.ReceiveEndpoint("user-register-queue", ep =>
                     {
-                        ep.Consumer<UserCreateConsumer>(ctx);
+                        ep.ConfigureConsumer<UserCreateConsumer>(ctx);
                     });
                 });
             });
