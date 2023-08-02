@@ -8,6 +8,8 @@ riderModule.iml
 /.vscode/
 /.vs/
 /rabbitmq/
+/rabbitmq/**/
+rabbitmq/
 /sqlserver/
 /redis/
 /consul/
