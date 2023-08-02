@@ -1,6 +1,7 @@
-namespace UserManagement.API.Requests;
-
-public class DeactivateAccountRequest
+namespace UserManagement.API.Requests
 {
-    public Guid UserId { get; set; }
+    public class DeactivateAccountRequest 
+    {
+        public Guid UserId { get; set; }
+    }
 }

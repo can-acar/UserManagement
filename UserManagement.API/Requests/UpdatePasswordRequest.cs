@@ -1,7 +1,8 @@
-namespace UserManagement.API.Requests;
-
-public class UpdatePasswordRequest
+namespace UserManagement.API.Requests
 {
-    public Guid UserId { get; set; }
-    public string NewPassword { get; set; }
+    public class UpdatePasswordRequest
+    {
+        public Guid UserId { get; set; }
+        public string NewPassword { get; set; }
+    }
 }

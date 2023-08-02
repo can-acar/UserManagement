@@ -1,14 +1,14 @@
 ﻿using FluentValidation;
-using UserManagement.API.Handlers;
 using UserManagement.API.Requests;
 
-namespace UserManagement.API.Validations;
-
-public class LoginRequestValidator : AbstractValidator<LoginRequest>
+namespace UserManagement.API.Validations
 {
-    public LoginRequestValidator()
+    public class LoginRequestValidator : AbstractValidator<LoginRequest>
     {
-        RuleFor(x => x.Username).NotEmpty().MaximumLength(50);
-        RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+        public LoginRequestValidator()
+        {
+            RuleFor(x => x.Username).NotEmpty().MaximumLength(50);
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(6);
+        }
     }
 }

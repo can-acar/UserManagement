@@ -1,13 +1,13 @@
 ﻿using FluentValidation;
-using UserManagement.API.Handlers;
 using UserManagement.API.Requests;
 
-namespace UserManagement.API.Validations;
-
-public class DeactivateAccountRequestValidator : AbstractValidator<DeactivateAccountRequest>
+namespace UserManagement.API.Validations
 {
-    public DeactivateAccountRequestValidator()
+    public class DeactivateAccountRequestValidator : AbstractValidator<DeactivateAccountRequest>
     {
-        RuleFor(x => x.UserId).NotEmpty();
+        public DeactivateAccountRequestValidator()
+        {
+            RuleFor(x => x.UserId).NotEmpty();
+        }
     }
 }

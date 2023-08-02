@@ -1,4 +1,7 @@
-﻿using UserManagement.Core.Interfaces;
+﻿using UserManagement.Core.Commands;
+using UserManagement.Core.Events;
+using UserManagement.Core.Interfaces;
+using UserManagement.Core.Services;
 
 namespace UserManagement.API.Handlers;
 
@@ -6,39 +9,40 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, ServiceRespo
 {
     private readonly ILogger<CreateUserHandler> _logger;
     private readonly IPublishEndpoint _publishEndpoint;
+    private readonly IBusControl _busControl;
+    private readonly IUserService _userService;
 
-    public CreateUserHandler(ILogger<CreateUserHandler> logger, IPublishEndpoint publishEndpoint)
+
+    public CreateUserHandler(ILogger<CreateUserHandler> logger, IPublishEndpoint publishEndpoint, IBusControl busControl, IUserService userService)
     {
         _logger = logger;
         _publishEndpoint = publishEndpoint;
+        _busControl = busControl;
+        _userService = userService;
     }
 
 
     public async Task<ServiceResponse> Handle(CreateUserCommand command, CancellationToken cancellationToken)
     {
-        try
+        // try
+        // {
+        _logger.LogInformation("[EXECUTING]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
+
+        var (activationCode, result) = await _userService.CreateUser(command);
+
+        await _publishEndpoint.Publish<IUserRegisteredEvent>(new UserRegisteredEvent
         {
-            _logger.LogInformation("Creating user with username: {Username}", command.Username);
-
-            await _publishEndpoint.Publish<ICreateUserEvent>(new
-            {
-                Username = command.Username,
-                Password = command.Password
-            }, cancellationToken);
-
-            // get the response from  Identity.Service 
+            UserId = Guid.NewGuid(),
+            Username = command.Username,
+            Password = command.Password,
+            Email = command.Email,
+            ActivationCode = activationCode
+        }, cancellationToken);
 
 
-            return new ServiceResponse
-            {
-                Status = true,
-                Message = "User created successfully"
-            };
-        }
-        catch (Exception ex)
-        {
-            _logger.LogError(ex, "Error creating user with username: {Username}", command.Username);
-            throw;
-        }
+        _logger.LogInformation("[EXECUTED:SUCCESS]CreateUserHandler.Handle: {Username},Detail:{@command}", command.Username, command);
+
+
+        return result;
     }
 }

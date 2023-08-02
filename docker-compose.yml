@@ -1,70 +1,108 @@
 ﻿services:
-  usermanagement-api:
-    image: usermanagement.api
+  usermanagement_api:
+    image: user-management-api
     build:
-      context: UserManagement.API
-      dockerfile: Dockerfile
-    ports:
-      - "5005:80"
-  
-  mail-service:
-    image: mailservice
-    build:
-      context: Mail.Service
-      dockerfile: Dockerfile
-    ports:
-      - "5002:80"
-    depends_on:
-      - usermanagement-db
-  
-  profile-service:
-    image: profileservice
-    build:
-      context: Profile.Management.Service
-      dockerfile: Dockerfile
-    ports:
-      - "5003:80"
-    depends_on:
-      - usermanagement-db
-  
-  
-  identity-service:
-    image: identityservice
-    build:
-      context: Login.Service
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: UserManagement.API/Dockerfile
     ports:
       - "5001:80"
     depends_on:
-      - usermanagement-db
+      - user-management-db
+      - rabbitmq
+      - elastic_search
+      - kibana
+      - log_stash
+      - mock_smtp_server
+
+  mail_service:
+    image: mail_service
+    build:
+      context: .
+      dockerfile: UserManagement.MailService/Dockerfile
+    ports:
+      - "5002:80"
+    networks:
+      - backend
+      - public
+    depends_on:
+      - mock_smtp_server
+      - rabbitmq
+      - user-management-db
   
-  usermanagement-db:
+  saga_machine:
+    image: saga_machine
+    build:
+      context: .
+      dockerfile: UserManagement.Saga/Dockerfile
+    ports:
+      - "5003:80"
+    networks:
+      - backend
+      - public
+    depends_on:
+      - rabbitmq
+
+  user-management-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
     environment:
       SA_PASSWORD: "db+123456"
       ACCEPT_EULA: "Y"
+      MSQSQL_BACKUP_DIR: "/var/opt/sqlserver/backups"
+      MSSQL_DATA_DIR: "/var/opt/sqlserver/data"
+      MSSQL_LOG_DIR: "/var/opt/sqlserver/logs"
+      MSSQL_PID: "Developer"
+      SERVER_COLLECTION: "TURKISH_CI_AS"
+      SERVER_NAME: "msqsql_docker_server"
+      SQL_ADMIN_LOGIN: "sa"
+      SQL_ADMIN_PASSWORD: "db+123456"
     ports:
       - "1433:1433"
     volumes:
-      - user-db-data:/var/opt/mssql/data
-  
+      - type: bind
+        source: ./sqlserver/data
+        target: /var/opt/sqlserver/data
+      - type: bind
+        source: ./sqlserver/backups
+        target: /var/opt/sqlserver/backups
+      - type: bind
+        source: ./sqlserver/logs
+        target: /var/opt/sqlserver/logs
+      - type: bind
+        source: ./sqlserver/data
+        target: /var/opt/mssql/data
+      - type: bind
+        source: ./sqlserver/backups
+        target: /var/opt/mssql/backups
+      - type: bind
+        source: ./sqlserver/logs
+        target: /var/opt/mssql/logs
+
   rabbitmq:
     image: rabbitmq:3-management
-    container_name: 'rabbitmq'
+    container_name: "rabbitmq"
     ports:
       - 5672:5672
       - 15672:15672
-    
+    # create a user, virtual host and set a password
+
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+      - RABBITMQ_DEFAULT_VHOST=/
+    volumes:
+      - ./rabbitmq:/var/lib/rabbitmq
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+
     networks:
       - rabbitmq_go_net
     hostname: local-queue
-    command: [ "bash","-c","rabbitmq-server" ]
-  
-  elasticsearch:
+    command: [ "bash", "-c", "rabbitmq-server" ]
+
+  elastic_search:
     image: docker.elastic.co/elasticsearch/elasticsearch:7.15.0
-    container_name: elasticsearch
+    container_name: elastic_search
     environment:
-      - node.name=elasticsearch
+      - node.name=es-node
       - cluster.name=docker-cluster
       - discovery.type=single-node
       - bootstrap.memory_lock=true
@@ -74,10 +112,14 @@
         soft: -1
         hard: -1
     volumes:
-      - esdata:/usr/share/elasticsearch/data
+      - ./esdata:/usr/share/elasticsearch/data
     ports:
-      - "9200:9200"
-      - "9300:9300"
+      - 9200:9200
+      - 9300:9300
+    networks:
+      - backend
+      - rabbitmq_go_net
+      - public
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.15.0
@@ -85,37 +127,58 @@
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
-      - "5601:5601"
-
-  logstash:
-    image: docker.elastic.co/logstash/logstash:7.15.0
-    container_name: logstash
+      - 5601:5601
+    depends_on:
+      - elastic_search
+      - log_stash
+      - rabbitmq
+    networks:
+      - backend
+      - rabbitmq_go_net
+      - public
     volumes:
-      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
+
+  log_stash:
+    image: docker.elastic.co/logstash/logstash:7.15.0
+    container_name: log_stash
+    volumes:
+      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
+      - ./logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf:ro
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     environment:
       - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
     ports:
-      - "5000:5000"
+      - "9400:9400"
+    networks:
+      - backend
+      - rabbitmq_go_net
+      - public
+    command: logstash -f /etc/logstash/conf.d/logstash.conf
 
-
-volumes:
-  user-db-data:
-  esdata:
+  mock_smtp_server:
+    image: maildev/maildev
+    container_name: fake_mail_server
+    ports:
+      - "1080:1080"
+      - "1025:1025"
+    networks:
+      - backend
+    restart: always
 
 networks:
   rabbitmq_go_net:
-    driver: bridge
-  
-  intranet:
-    name: "backend-intranet"
+    driver: "bridge"
+
+  backend:
+    name: "backend"
     driver: "bridge"
     driver_opts:
-      com.docker.network.bridge.name: "backend-intranet"
+      com.docker.network.bridge.name: "backend"
     ipam:
       driver: default
       config:
-        - subnet: 175.15.25.0/16
+        - subnet: 171.15.25.0/16
 
   public:
     name: "publicnet"
@@ -126,4 +189,4 @@ networks:
     ipam:
       driver: default
       config:
-        - subnet: 175.17.25.0/16
+        - subnet: 171.17.25.0/16

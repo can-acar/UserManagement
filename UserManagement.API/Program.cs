@@ -1,29 +1,41 @@
+using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Serilog.Formatting.Elasticsearch;
+using Serilog.Sinks.Elasticsearch;
+using UserManagement.API.Helpers;
+using UserManagement.Infrastructure.Middlewares;
+
 var assemblies = Assembly.GetExecutingAssembly();
 var builder = WebApplication.CreateBuilder(args);
 var host = builder.Host;
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// host configure loggin
-host.ConfigureLogging(x => x.ClearProviders().AddSerilog())
-    .UseSerilog((ctx, lc) =>
+Log.Logger = new LoggerConfiguration()
+    .MinimumLevel.Debug() // developer mode
+    .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Error)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.DataProtection", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
+    .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Server.WebListener", LogEventLevel.Information)
+    .Enrich.WithThreadName()
+    .Enrich.WithThreadId()
+    //.Enrich.WithExceptionDetails()
+    .Enrich.WithProperty("ApplicationName", "UserManagement.API")
+    .Enrich.FromLogContext()
+    //.WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000, rollingInterval: RollingInterval.Day)
+    .WriteTo.Console(theme: AnsiConsoleTheme.Code)
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions
     {
-        lc.MinimumLevel.Debug()
-            .MinimumLevel.Override("Microsoft.AspNetCore", LogEventLevel.Warning)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Authentication", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.DataProtection", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Internal.WebHost", LogEventLevel.Information)
-            .MinimumLevel.Override("Microsoft.AspNetCore.Hosting.Server.WebListener", LogEventLevel.Information)
-            .Enrich.WithThreadName()
-            .Enrich.WithThreadId()
-            .Enrich.WithExceptionDetails()
-            .Enrich.WithProperty("ApplicationName", "CargoPursuitApp")
-            .Enrich.FromLogContext()
-            .WriteTo.File(@"logs/log-.txt", fileSizeLimitBytes: 3000,
-                rollingInterval: RollingInterval.Day)
-            .WriteTo.Console(theme: AnsiConsoleTheme.Literate)
-            .ReadFrom.Configuration(ctx.Configuration);
-    });
+        AutoRegisterTemplate = true,
+        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+        IndexFormat = "usermanagement-api-log-{0:yyyy.MM.dd}",
+        CustomFormatter = new ExceptionAsObjectJsonFormatter(renderMessage: true),
+        MinimumLogEventLevel = LogEventLevel.Debug
+    })
+    .CreateLogger();
+
+host.UseSerilog();
 
 // Add services to the container.
 
@@ -34,7 +46,18 @@ services.AddCors();
 services.AddEndpointsApiExplorer();
 services.AddOptions();
 services.AddHealthChecks();
+services.AddDataProtection();
+
+
 services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo {Title = "Usermanagement.API", Version = "v1"}); });
+// 
+services.UseValidationConfiguration(configuration);
+services.UseMassTransitConfiguration(configuration);
+services.UseMediatrConfiguration(configuration);
+services.UseServicesConfiguration(configuration);
+services.UseDbConfiguration(configuration);
+
+
 builder.Services.AddRateLimiter(options =>
 {
     options.AddFixedWindowLimiter("fixed-window", co =>
@@ -50,6 +73,15 @@ builder.WebHost.UseKestrel();
 builder.WebHost.UseIISIntegration();
 builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
 
+// var certificate = new X509Certificate2(builder.Configuration["Kestrel:Certificates:Default:Path"]!, builder.Configuration["Kestrel:Certificates:Default:Password"]);
+//
+// builder.WebHost.ConfigureKestrel(serverOptions =>
+// {
+//     serverOptions.AddServerHeader = false;
+//     serverOptions.ConfigureHttpsDefaults(listenOptions => { listenOptions.ServerCertificate = certificate; });
+// });
+
+
 var app = builder.Build();
 app.UseSerilogRequestLogging();
 app.UseHttpsRedirection();
@@ -62,10 +94,25 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseHealthChecks("/health", new HealthCheckOptions {Predicate = _ => true});
+app.UseHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse});
+app.MapHealthChecks("/health/live", new HealthCheckOptions() {Predicate = _ => false}); // Exclude all checks and return a 200-Ok
+app.MapHealthChecks("/health/ready", new HealthCheckOptions() {Predicate = (check) => check.Tags.Contains("ready")});
 
-app.UseAuthorization();
+app.UseSerilogRequestLogging();
 
+app.UseRouting();
+app.UseRateLimiter();
+app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials()
+    .SetIsOriginAllowed(_ => true));
+
+
+app.UseAuthentication();
 app.MapControllers();
+app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
 
 try
 {

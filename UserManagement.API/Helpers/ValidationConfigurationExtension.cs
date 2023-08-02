@@ -1,15 +1,21 @@
-﻿using FluentValidation.AspNetCore;
-using Microsoft.OpenApi.Models;
+﻿using FluentValidation;
+using FluentValidation.AspNetCore;
+using MediatR.Extensions.FluentValidation.AspNetCore;
 
-namespace UserManagement.API.Helpers;
-
-public static class ValidationConfigurationExtension
+namespace UserManagement.API.Helpers
 {
-    public static void AddValidationConfiguration(this IServiceCollection services)
+    public static class ValidationConfigurationExtension
     {
-        services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
- 
-    
-        services.AddFluentValidationAutoValidation();
+        public static void UseValidationConfiguration(this IServiceCollection services, IConfiguration configurationManager)
+        {
+            var assemblies = Assembly.GetExecutingAssembly();
+            services.AddFluentValidationAutoValidation();
+            // services.Configure<ApiBehaviorOptions>(options => { options.SuppressModelStateInvalidFilter = true; });
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(LoggingBehaviour<,>));
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
+
+            //services.AddScoped<IValidator<CreateUserRequest>, RegisterUserRequestValidator>();
+            services.AddValidatorsFromAssembly(assemblies);
+        }
     }
 }
