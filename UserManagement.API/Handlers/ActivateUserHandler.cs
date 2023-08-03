@@ -25,6 +25,8 @@ public class ActivateUserHandler : IRequestHandler<ActivateUserCommand, ServiceR
 
         var result = await _userService.ActivateUser(request.ActivationCode);
 
+        _logger.LogInformation("[EXECUTED:SUCCESS]ActivateUser Detail:{@request}", request);
+
         return result;
     }
 }

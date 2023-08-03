@@ -53,11 +53,6 @@
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
     </ItemGroup>
     <ItemGroup>
-        <Content Include="..\.dockerignore">
-            <Link>.dockerignore</Link>
-        </Content>
-    </ItemGroup>
-    <ItemGroup>
       <ProjectReference Include="..\UserManagement.Core\UserManagement.Core.csproj" />
     </ItemGroup>
 

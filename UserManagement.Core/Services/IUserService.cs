@@ -5,9 +5,10 @@ namespace UserManagement.Core.Services
     public interface IUserService
     {
         Task<(string, ServiceResponse)> CreateUser(CreateUserCommand user);
-        Task UpdateProfile(Guid userId, string username, string email);
-
-        Task UpdatePassword(Guid userId, string newPassword);
+        Task<ServiceResponse> UpdateUser(Guid userId, string userName, string email);
+        Task<ServiceResponse> UpdatePassword(Guid userId, string password);
         Task<ServiceResponse> ActivateUser(string activationCode);
+
+        Task<ServiceResponse> DeactivateUser(Guid userId);
     }
 }

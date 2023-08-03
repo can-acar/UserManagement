@@ -11,9 +11,15 @@ namespace UserManagement.Core.Repositories
         private readonly UserManagementContext _db;
         private IDbContextTransaction _transaction;
 
+
         public UserRepository(UserManagementContext context)
         {
             _db = context;
+        }
+
+        public async Task<Users> GetUser(Expression<Func<Users, bool>> predicate)
+        {
+            return await _db.Users.FirstOrDefaultAsync(predicate);
         }
 
 
@@ -53,6 +59,18 @@ namespace UserManagement.Core.Repositories
             return await _db.UserActivations.Where(p => p.ActivationCode == code)
                 .Include(p => p.User)
                 .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> UpdateUser(Users user)
+        {
+            _db.Users.Update(user);
+
+            return await _db.SaveChangesAsync() == 1;
+        }
+
+        public async Task<bool> IsUserActivate(string activationCode)
+        {
+            return await _db.UserActivations.AnyAsync(x => x.ActivationCode == activationCode && x.UpdatedAt != null && x.ExpirationDate > DateTime.Now);
         }
 
 

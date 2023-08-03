@@ -10,6 +10,9 @@ namespace UserManagement.API.Helpers
             services.AddMassTransit(cfg =>
             {
                 cfg.AddConsumer<UserCreateConsumer>();
+                cfg.AddConsumer<UserUpdateConsumer>();
+                cfg.AddConsumer<UserDeactivateConsumer>();
+                cfg.AddConsumer<ForgotPasswordConsumer>();
                 //
                 cfg.UsingRabbitMq((ctx, ec) =>
                 {
@@ -44,10 +47,13 @@ namespace UserManagement.API.Helpers
                     ec.UseRateLimit(1000, TimeSpan.FromMinutes(1));
 
 
-                    ec.ReceiveEndpoint("user-register-queue", ep =>
-                    {
-                        ep.ConfigureConsumer<UserCreateConsumer>(ctx);
-                    });
+                    ec.ReceiveEndpoint("user-register-queue", ep => { ep.ConfigureConsumer<UserCreateConsumer>(ctx); });
+
+                    ec.ReceiveEndpoint("user-update-queue", ep => { ep.ConfigureConsumer<UserUpdateConsumer>(ctx); });
+
+                    ec.ReceiveEndpoint("user-deactivate-queue", ep => { ep.ConfigureConsumer<UserDeactivateConsumer>(ctx); });
+
+                    ec.ReceiveEndpoint("forgot-password-queue", ep => { ep.ConfigureConsumer<ForgotPasswordConsumer>(ctx); });
                 });
             });
         }

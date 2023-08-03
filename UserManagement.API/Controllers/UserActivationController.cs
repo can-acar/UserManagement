@@ -1,4 +1,6 @@
-﻿using UserManagement.Core.Commands;
+﻿using System.Text;
+using System.Web;
+using UserManagement.Core.Commands;
 
 namespace UserManagement.API.Controllers
 {
@@ -16,7 +18,7 @@ namespace UserManagement.API.Controllers
         }
 
         [HttpGet("{activationCode}", Name = "ActivateUser")]
-        public async Task<IActionResult> Login([FromRoute] string activationCode)
+        public async Task<IActionResult> UserActivation([FromRoute] string activationCode)
         {
             try
             {

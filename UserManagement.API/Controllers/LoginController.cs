@@ -16,6 +16,7 @@ namespace UserManagement.API.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         [HttpPost("", Name = "Login")]
         public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {

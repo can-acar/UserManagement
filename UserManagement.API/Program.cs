@@ -111,6 +111,7 @@ app.UseCors(x => x
 
 
 app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
 

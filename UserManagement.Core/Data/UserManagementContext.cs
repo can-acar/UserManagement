@@ -36,7 +36,7 @@ public partial class UserManagementContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.UserActivations)
                 .HasForeignKey(d => d.UserId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
+                .OnDelete(DeleteBehavior.ClientNoAction)
                 .HasConstraintName("FK_UserActivations_Users");
         });
 
@@ -47,6 +47,20 @@ public partial class UserManagementContext : DbContext
             entity.Property(e => e.Email).IsRequired();
             entity.Property(e => e.Password).IsRequired();
             entity.Property(e => e.Username).IsRequired();
+        });
+
+
+        modelBuilder.Entity<UserToken>(entity =>
+        {
+            entity.Property(e => e.Id).HasDefaultValueSql("(newid())");
+            entity.Property(e => e.CreatedAt).HasDefaultValueSql("(getdate())");
+            entity.Property(e => e.Token).IsRequired();
+            entity.Property(e => e.ExpiredAt).IsRequired();
+
+            entity.HasOne(d => d.User).WithMany(p => p.UserTokens)
+                .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientNoAction)
+                .HasConstraintName("FK_UserActivations_UserToken");
         });
 
         OnModelCreatingPartial(modelBuilder);
