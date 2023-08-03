@@ -8,6 +8,9 @@
       - 5001:80
     depends_on:
       - user-management-db
+      - rabbitmq
+    networks:
+      - backend
 
   mail_service:
     image: user-management-service
@@ -18,10 +21,8 @@
       - "5002:80"
     networks:
       - backend
-      - public
+
     depends_on:
-      - mock_smtp_server
-      - rabbitmq
       - user-management-db
 
   saga_machine:
@@ -33,9 +34,6 @@
       - "5003:80"
     networks:
       - backend
-      - public
-    depends_on:
-      - rabbitmq
 
   user-management-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -71,6 +69,9 @@
       - type: bind
         source: ./sqlserver/logs
         target: /var/opt/mssql/logs
+    networks:
+      - backend
+
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -88,7 +89,7 @@
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
 
     networks:
-      - rabbitmq_go_net
+      - backend
     hostname: local-queue
     command: [ "bash", "-c", "rabbitmq-server" ]
 
