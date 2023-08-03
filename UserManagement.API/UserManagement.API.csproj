@@ -62,6 +62,9 @@
 
     <ItemGroup>
       <Content Remove="obj\**" />
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
     </ItemGroup>
 
 

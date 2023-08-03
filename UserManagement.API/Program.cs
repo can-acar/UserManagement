@@ -84,15 +84,23 @@ builder.WebHost.UseContentRoot(Directory.GetCurrentDirectory());
 
 var app = builder.Build();
 app.UseSerilogRequestLogging();
-app.UseHttpsRedirection();
+// app.UseHttpsRedirection();
 app.UseMiddleware<ErrorHandlerMiddleware>();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
+// if (app.Environment.IsDevelopment())
+// {
+app.UseSwagger(opt =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+    opt.PreSerializeFilters.Add((swagger, httpReq) =>
+    {
+        var scheme = httpReq.Host.Host.StartsWith("localhost", StringComparison.OrdinalIgnoreCase) ? "http" : "https";
+        swagger.Servers = new List<OpenApiServer>() {new OpenApiServer() {Url = $"{scheme}://{httpReq.Host}"}};
+    });
+});
+
+app.UseSwaggerUI();
+// }
 
 app.UseHealthChecks("/health", new HealthCheckOptions {Predicate = _ => true});
 app.UseHealthChecks("/healthz", new HealthCheckOptions {Predicate = _ => true, ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse});
