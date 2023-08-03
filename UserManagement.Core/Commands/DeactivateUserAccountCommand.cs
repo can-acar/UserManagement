@@ -6,6 +6,7 @@ namespace UserManagement.Core.Commands
     {
         public Guid UserId { get; }
 
+
         public DeactivateUserAccountCommand(Guid userId)
         {
             UserId = userId;

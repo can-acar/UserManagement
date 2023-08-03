@@ -6,15 +6,15 @@ namespace UserManagement.API.Handlers
 {
     public class ForgotPasswordHandler : IRequestHandler<ForgotPasswordCommand, ServiceResponse>
     {
-        private ILogger<ForgotPasswordHandler> _logger;
-        private IPublishEndpoint _publishEndpoint;
-        private IIdentityService _identityService;
+        private readonly ILogger<ForgotPasswordHandler> _logger;
+        private readonly IIdentityService _identityService;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public ForgotPasswordHandler(ILogger<ForgotPasswordHandler> logger, IPublishEndpoint publishEndpoint, IIdentityService identityService)
+        public ForgotPasswordHandler(ILogger<ForgotPasswordHandler> logger, IIdentityService identityService, IPublishEndpoint publishEndpoint)
         {
             _logger = logger;
-            _publishEndpoint = publishEndpoint;
             _identityService = identityService;
+            _publishEndpoint = publishEndpoint;
         }
 
         public async Task<ServiceResponse> Handle(ForgotPasswordCommand request, CancellationToken cancellationToken)

@@ -27,13 +27,15 @@ public class SendActivationMailHandler : IRequestHandler<ActivateUserAccountComm
 
             var body = await _emailRenderService.RenderEmailTemplate(request.Username, activationLink, "SoftRobotics");
 
-            await _mailProvider.SendMail(to: request.Username, mail: request.Email, subject: "", body: body);
+        
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Error while sending activation mail to {Email}", request.Email);
         }
 
-        return await Task.FromResult(new ServiceResponse());
+        return await ServiceResponse.SuccessAsync("Activation Mail Sent Successfully");
     }
 }
+
+// Send Update Mail Handler

@@ -16,7 +16,7 @@ namespace UserManagement.API.Controllers
             _logger = logger;
         }
 
-
+        [AllowAnonymous]
         [HttpPost("register")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -32,9 +32,9 @@ namespace UserManagement.API.Controllers
             return Ok(result);
         }
 
-
+        [Authorize]
         [HttpPost("update")]
-        [Authorize] // Implement JWT authentication for this endpoint
+        // Implement JWT authentication for this endpoint
         public async Task<IActionResult> UpdateProfile([FromBody] UpdateUserRequest request)
         {
             try
@@ -49,15 +49,16 @@ namespace UserManagement.API.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost("update-password")]
-        [Authorize] // Implement JWT authentication for this endpoint
+        // Implement JWT authentication for this endpoint
         public async Task<IActionResult> UpdatePassword([FromBody] UpdatePasswordRequest request)
         {
             try
             {
-                await _mediator.Send(new UpdateUserPasswordCommand(request.UserId, request.NewPassword));
+                var result = await _mediator.Send(new UpdateUserPasswordCommand(request.UserId, request.NewPassword));
 
-                return Ok("Password updated successfully.");
+                return Ok(result);
             }
             catch (Exception ex)
             {
@@ -65,14 +66,15 @@ namespace UserManagement.API.Controllers
             }
         }
 
-        [HttpPost("deactivate")]
         [Authorize] // Implement JWT authentication for this endpoint
+        [HttpPost("deactivate")]
         public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
         {
             try
             {
-                await _mediator.Send(new DeactivateUserAccountCommand(request.UserId));
-                return Ok("Account deactivated successfully.");
+                var result = await _mediator.Send(new DeactivateUserAccountCommand(request.UserId));
+
+                return Ok(result);
             }
             catch (Exception ex)
             {

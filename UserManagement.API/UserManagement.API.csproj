@@ -61,13 +61,22 @@
 
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
+      <Content Remove="obj\**" />
     </ItemGroup>
 
+
     <ItemGroup>
-      <Folder Include="obj\" />
+      <Compile Remove="obj\**" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <EmbeddedResource Remove="obj\**" />
+    </ItemGroup>
+
+
+    <ItemGroup>
+      <None Remove="obj\**" />
     </ItemGroup>
 
 </Project>

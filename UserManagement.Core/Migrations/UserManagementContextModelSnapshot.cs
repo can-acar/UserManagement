@@ -25,14 +25,18 @@ namespace UserManagement.Core.Migrations
             modelBuilder.Entity("UserManagement.Core.Models.UserActivations", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newid())");
 
                     b.Property<string>("ActivationCode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
 
                     b.Property<DateTime>("ExpirationDate")
                         .HasColumnType("datetime2");
@@ -48,6 +52,35 @@ namespace UserManagement.Core.Migrations
                     b.HasIndex(new[] { "UserId" }, "IX_UserActivations_UserId");
 
                     b.ToTable("UserActivations");
+                });
+
+            modelBuilder.Entity("UserManagement.Core.Models.UserToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier")
+                        .HasDefaultValueSql("(newid())");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime2")
+                        .HasDefaultValueSql("(getdate())");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserToken");
                 });
 
             modelBuilder.Entity("UserManagement.Core.Models.Users", b =>
@@ -96,8 +129,21 @@ namespace UserManagement.Core.Migrations
                     b.HasOne("UserManagement.Core.Models.Users", "User")
                         .WithMany("UserActivations")
                         .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
                         .IsRequired()
                         .HasConstraintName("FK_UserActivations_Users");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("UserManagement.Core.Models.UserToken", b =>
+                {
+                    b.HasOne("UserManagement.Core.Models.Users", "User")
+                        .WithMany("UserTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired()
+                        .HasConstraintName("FK_UserActivations_UserToken");
 
                     b.Navigation("User");
                 });
@@ -105,6 +151,8 @@ namespace UserManagement.Core.Migrations
             modelBuilder.Entity("UserManagement.Core.Models.Users", b =>
                 {
                     b.Navigation("UserActivations");
+
+                    b.Navigation("UserTokens");
                 });
 #pragma warning restore 612, 618
         }

@@ -14,5 +14,9 @@ public partial class UserActivations
 
     public DateTime ExpirationDate { get; set; }
 
+    public bool IsExpired => ExpirationDate < DateTime.Now;
+
+    public bool IsUsed => UpdatedAt != null;
+
     public virtual Users User { get; set; }
 }

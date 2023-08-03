@@ -20,5 +20,8 @@ public partial class Users
 
     public DateTime? UpdatedAt { get; set; }
 
+
     public virtual ICollection<UserActivations> UserActivations { get; set; } = new List<UserActivations>();
+
+    public virtual ICollection<UserToken> UserTokens { get; set; } = new List<UserToken>();
 }
