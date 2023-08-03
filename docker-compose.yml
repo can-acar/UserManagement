@@ -1,46 +1,41 @@
 ﻿services:
-#  usermanagement_api:
-#    image: user-management-api
-#    build:
-#      context: .
-#      dockerfile: UserManagement.API/Dockerfile
-#    ports:
-#      - "5001:80"
-#    depends_on:
-#      - user-management-db
-#      - rabbitmq
-#      - elastic_search
-#      - kibana
-#      - log_stash
-#      - mock_smtp_server
-#
-#  mail_service:
-#    image: mail_service
-#    build:
-#      context: .
-#      dockerfile: UserManagement.MailService/Dockerfile
-#    ports:
-#      - "5002:80"
-#    networks:
-#      - backend
-#      - public
-#    depends_on:
-#      - mock_smtp_server
-#      - rabbitmq
-#      - user-management-db
-#  
-#  saga_machine:
-#    image: saga_machine
-#    build:
-#      context: .
-#      dockerfile: UserManagement.Saga/Dockerfile
-#    ports:
-#      - "5003:80"
-#    networks:
-#      - backend
-#      - public
-#    depends_on:
-#      - rabbitmq
+  usermanagement_api:
+    image: user-management-api
+    build:
+      context: .
+      dockerfile: UserManagement.API/Dockerfile
+    ports:
+      - 5001:80
+    depends_on:
+      - user-management-db
+
+  mail_service:
+    image: user-management-service
+    build:
+      context: .
+      dockerfile: UserManagement.MailService/Dockerfile
+    ports:
+      - "5002:80"
+    networks:
+      - backend
+      - public
+    depends_on:
+      - mock_smtp_server
+      - rabbitmq
+      - user-management-db
+
+  saga_machine:
+    image: user-management-saga
+    build:
+      context: .
+      dockerfile: UserManagement.Saga/Dockerfile
+    ports:
+      - "5003:80"
+    networks:
+      - backend
+      - public
+    depends_on:
+      - rabbitmq
 
   user-management-db:
     image: mcr.microsoft.com/mssql/server:2019-latest

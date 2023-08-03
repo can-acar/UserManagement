@@ -55,5 +55,10 @@
     <ItemGroup>
       <ProjectReference Include="..\UserManagement.Core\UserManagement.Core.csproj" />
     </ItemGroup>
+    <ItemGroup>
+      <Content Include="..\.dockerignore">
+        <Link>.dockerignore</Link>
+      </Content>
+    </ItemGroup>
 
 </Project>
