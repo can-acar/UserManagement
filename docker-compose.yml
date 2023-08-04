@@ -6,11 +6,11 @@
       dockerfile: UserManagement.API/Dockerfile
     ports:
       - 5001:80
-    depends_on:
-      - user-management-db
-      - rabbitmq
     networks:
+      - mssql_server
+      - rabbitmq
       - backend
+      - public
 
   mail_service:
     image: user-management-service
@@ -20,10 +20,9 @@
     ports:
       - "5002:80"
     networks:
+      - mssql_server
+      - rabbitmq
       - backend
-
-    depends_on:
-      - user-management-db
 
   saga_machine:
     image: user-management-saga
@@ -33,7 +32,7 @@
     ports:
       - "5003:80"
     networks:
-      - backend
+      - rabbitmq
 
   user-management-db:
     image: mcr.microsoft.com/mssql/server:2019-latest
@@ -70,8 +69,7 @@
         source: ./sqlserver/logs
         target: /var/opt/mssql/logs
     networks:
-      - backend
-
+      - mssql_server
 
   rabbitmq:
     image: rabbitmq:3-management
@@ -80,15 +78,14 @@
       - 5672:5672
       - 15672:15672
     # create a user, virtual host and set a password
-
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
       - RABBITMQ_DEFAULT_VHOST=/
     volumes:
       - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
-
     networks:
+      - rabbitmq
       - backend
     hostname: local-queue
     command: [ "bash", "-c", "rabbitmq-server" ]
@@ -106,15 +103,10 @@
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - ./esdata:/usr/share/elasticsearch/data
     ports:
-      - 9200:9200
-      - 9300:9300
+      - "9200:9200"
     networks:
       - backend
-      - rabbitmq_go_net
-      - public
 
   kibana:
     image: docker.elastic.co/kibana/kibana:7.15.0
@@ -122,34 +114,22 @@
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
     ports:
-      - 5601:5601
-    depends_on:
-      - elastic_search
-      - log_stash
-      - rabbitmq
+      - "5601:5601"
     networks:
       - backend
-      - rabbitmq_go_net
-      - public
-    volumes:
-      - ./kibana/kibana.yml:/usr/share/kibana/config/kibana.yml
 
-  log_stash:
-    image: docker.elastic.co/logstash/logstash:7.15.0
-    container_name: log_stash
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.14.0
+    container_name: logstash
     volumes:
-      - ./logstash/logstash.yml:/usr/share/logstash/config/logstash.yml
-      - ./logstash/logstash.conf:/etc/logstash/conf.d/logstash.conf:ro
+      - ./logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml
       - ./logstash/pipeline:/usr/share/logstash/pipeline
     environment:
-      - "LS_JAVA_OPTS=-Xmx256m -Xms256m"
+      - "LOGSTASH_JAVA_OPTS=-Xmx256m -Xms256m"
     ports:
-      - "9400:9400"
+      - "5044:5044"
     networks:
       - backend
-      - rabbitmq_go_net
-      - public
-    command: logstash -f /etc/logstash/conf.d/logstash.conf
 
   mock_smtp_server:
     image: maildev/maildev
@@ -159,29 +139,22 @@
       - "1025:1025"
     networks:
       - backend
-    restart: always
+      - public
 
 networks:
-  rabbitmq_go_net:
-    driver: "bridge"
-
+  mssql_server:
+    name: "msqsql_server"
+    driver: bridge
+  
   backend:
     name: "backend"
-    driver: "bridge"
-    driver_opts:
-      com.docker.network.bridge.name: "backend"
-    ipam:
-      driver: default
-      config:
-        - subnet: 171.15.25.0/16
-
+    driver: bridge
+  
+  rabbitmq:
+    name: "rabbitmq"
+    driver: bridge
+  
   public:
-    name: "publicnet"
-    driver: "bridge"
+    name: "public"
+    driver: bridge
     internal: true
-    driver_opts:
-      com.docker.network.bridge.name: "publicnet"
-    ipam:
-      driver: default
-      config:
-        - subnet: 171.17.25.0/16
