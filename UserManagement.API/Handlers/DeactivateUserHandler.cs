@@ -4,7 +4,7 @@ using UserManagement.Core.Services;
 
 namespace UserManagement.API.Handlers;
 
-public class DeactivateUserHandler : IRequestHandler<DeactivateUserCommand, ServiceResponse>
+public class DeactivateUserHandler : IRequestHandler<DeactivateUserAccountCommand, ServiceResponse>
 {
     private readonly ILogger<DeactivateUserHandler> _logger;
     private readonly IPublishEndpoint _publishEndpoint;
@@ -19,7 +19,7 @@ public class DeactivateUserHandler : IRequestHandler<DeactivateUserCommand, Serv
         _userService = userService;
     }
 
-    public async Task<ServiceResponse> Handle(DeactivateUserCommand request, CancellationToken cancellationToken)
+    public async Task<ServiceResponse> Handle(DeactivateUserAccountCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation("[EXECUTING]DeactivateUser Detail:{@request}", request);
 
