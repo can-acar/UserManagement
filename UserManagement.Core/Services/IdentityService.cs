@@ -78,9 +78,25 @@ namespace UserManagement.Core.Services
         }
 
 
-        public Task ForgotPassword(string email)
+        public async Task<ServiceResponse> ForgotPassword(string email)
         {
-            throw new AppException("Forgot password request failed.");
+            try
+            {
+                var user = await _userRepository.GetUser(p => p.Email == email);
+
+                if (user == null)
+                {
+                    throw new AppException("Email is not registered.");
+                }
+
+                // TODO: Send email to user with password reset link
+
+                return await ServiceResponse.SuccessAsync("Forgot password successful.");
+            }
+            catch (Exception ex)
+            {
+                return await ServiceResponse.ErrorAsync(ex.Message);
+            }
         }
     }
 }
