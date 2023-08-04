@@ -34,13 +34,21 @@ namespace UserManagement.Core.Services
 
         public async Task<ServiceResponse> Login(string username, string password)
         {
-            var user = await _userRepository.GetUser(p => p.Username == username);
+            
             var currentDateTime = DateTime.UtcNow;
+            var user = await _userRepository.GetUser(p => p.Username == username);
+            
 
             if (user == null)
             {
                 _logger.LogError("[FAILED]IdentityService.Login: {Username}", username);
                 throw new AuthenticationException("Username or password is incorrect.");
+            }
+            
+            if (user.IsActive == false)
+            {
+                _logger.LogError("[FAILED]IdentityService.Login: {Username}", username);
+                throw new AuthenticationException("User is not active.");
             }
 
             var result = _passwordHasher.VerifyHashedPassword(new Users(), user.Password, password);
