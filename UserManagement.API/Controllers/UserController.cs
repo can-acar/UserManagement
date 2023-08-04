@@ -66,7 +66,7 @@ namespace UserManagement.API.Controllers
             }
         }
 
-        [Authorize] // Implement JWT authentication for this endpoint
+        [Authorize] 
         [HttpPost("deactivate")]
         public async Task<IActionResult> DeactivateAccount([FromBody] DeactivateAccountRequest request)
         {
