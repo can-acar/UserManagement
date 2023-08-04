@@ -8,9 +8,13 @@ public class SendActivationMailHandler : IRequestHandler<ActivateUserAccountComm
     private readonly ILogger<SendActivationMailHandler> _logger;
     private readonly IMailProvider _mailProvider;
     private readonly IEmailRenderService _emailRenderService;
+    private readonly IConfiguration _configuration;
 
-    public SendActivationMailHandler(ILogger<SendActivationMailHandler> logger, IMailProvider mailProvider, IEmailRenderService emailRenderService)
+    public SendActivationMailHandler(ILogger<SendActivationMailHandler> logger,
+        IMailProvider mailProvider,
+        IEmailRenderService emailRenderService, IConfiguration configuration)
     {
+        _configuration = configuration;
         _logger = logger;
         _mailProvider = mailProvider;
         _emailRenderService = emailRenderService;
@@ -22,12 +26,13 @@ public class SendActivationMailHandler : IRequestHandler<ActivateUserAccountComm
         {
             _logger.LogInformation($"Sending activation mail to {request.Email}.");
 
-
-            var activationLink = $"https://localhost:7041/user-activation/{request.ActivationCode}";
+            var url = _configuration["Activation:Url"];
+            
+            var activationLink = $"{url}/{request.ActivationCode}";
 
             var body = await _emailRenderService.RenderEmailTemplate(request.Username, activationLink, "SoftRobotics");
 
-        
+            await _mailProvider.SendMail(to: request.Username, mail: request.Email, subject: "", body: body);
         }
         catch (Exception ex)
         {
