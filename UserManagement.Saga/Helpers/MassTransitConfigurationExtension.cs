@@ -23,9 +23,15 @@
                         ep.UseMessageRetry(r => r.Interval(5, 100));
                         ep.StateMachineSaga(userSaga, repository);
                     });
-                });
 
-              
+                    x.ReceiveEndpoint("user-forgot-password-saga",
+                        ep =>
+                        {
+                            ep.PrefetchCount = 8;
+                            ep.UseMessageRetry(r => r.Interval(5, 100));
+                            ep.StateMachineSaga(new UserForgotPasswordSaga(), new InMemorySagaRepository<UserForgotPasswordSagaState>());
+                        });
+                });
             });
         }
     }

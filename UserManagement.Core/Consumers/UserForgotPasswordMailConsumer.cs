@@ -2,6 +2,8 @@
 using UserManagement.Core.Commands;
 using UserManagement.Core.Interfaces;
 
+namespace UserManagement.Core.Consumers;
+
 public class UserForgotPasswordMailConsumer : IConsumer<IUserForgotPasswordMailSendEvent>
 {
     private readonly ILogger<UserForgotPasswordMailConsumer> _logger;

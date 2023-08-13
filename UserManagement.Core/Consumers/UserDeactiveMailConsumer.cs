@@ -2,6 +2,8 @@
 using UserManagement.Core.Commands;
 using UserManagement.Core.Interfaces;
 
+namespace UserManagement.Core.Consumers;
+
 public class UserDeactiveMailConsumer : IConsumer<IUserDeactiveMailSendEvent>
 {
     private readonly ILogger<UserDeactiveMailConsumer> _logger;

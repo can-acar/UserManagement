@@ -2,7 +2,7 @@
 
 namespace UserManagement.Core.Consumers;
 
-public class ForgotPasswordConsumer : IConsumer<IForgotPasswordEvent>
+public class ForgotPasswordConsumer : IConsumer<IUserForgotPasswordEvent>
 {
     private readonly ILogger<ForgotPasswordConsumer> _logger;
 
@@ -11,7 +11,7 @@ public class ForgotPasswordConsumer : IConsumer<IForgotPasswordEvent>
         _logger = logger;
     }
 
-    public Task Consume(ConsumeContext<IForgotPasswordEvent> context)
+    public Task Consume(ConsumeContext<IUserForgotPasswordEvent> context)
     {
         _logger.LogInformation("Forgot password for user {Email}", context.Message.Email);
 

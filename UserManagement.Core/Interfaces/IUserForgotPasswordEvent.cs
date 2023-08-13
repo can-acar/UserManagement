@@ -1,6 +1,6 @@
 ﻿namespace UserManagement.Core.Interfaces;
 
-public interface IForgotPasswordEvent
+public interface IUserForgotPasswordEvent
 {
     string Email { get; set; }
 }

@@ -7,6 +7,7 @@
         public Event<IUserRegisteredEvent> UserRegisterEvent { get; set; }
         public Event<IUserRegisterActivateMailSendEvent> UserRegisterActivateMailSendEvent { get; set; }
 
+    
 
         public UserSaga()
         {
@@ -14,6 +15,7 @@
 
             Event(() => UserRegisterEvent, x => x.CorrelateById(context => context.Message.UserId));
             Event(() => UserRegisterActivateMailSendEvent, x => x.CorrelateById(context => context.Message.UserId));
+           
 
             Initially(
                 When(UserRegisterEvent)
@@ -35,6 +37,8 @@
                         ActivationCode = context.Saga.ActivationCode
                     })));
 
+  
+
             During(Registered,
                 When(UserRegisterActivateMailSendEvent)
                     .Then(context =>
@@ -44,6 +48,8 @@
                     })
                     .Finalize()
             );
+
+            
 
             SetCompletedWhenFinalized();
         }

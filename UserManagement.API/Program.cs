@@ -1,8 +1,10 @@
 using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.EntityFrameworkCore;
 using Serilog.Formatting.Elasticsearch;
 using Serilog.Sinks.Elasticsearch;
 using UserManagement.API.Helpers;
+using UserManagement.Core.Data;
 using UserManagement.Infrastructure.Middlewares;
 
 var assemblies = Assembly.GetExecutingAssembly();
@@ -122,6 +124,13 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.MapGet("/", async context => { await context.Response.WriteAsync("Healtly"); });
+
+using (var serviceScope = app.Services.CreateScope())
+{
+    var appService = serviceScope.ServiceProvider;
+    var dbContext = appService.GetRequiredService<UserManagementContext>();
+    dbContext.Database.Migrate();
+}
 
 try
 {

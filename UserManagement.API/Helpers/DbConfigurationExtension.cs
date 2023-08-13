@@ -19,6 +19,7 @@ namespace UserManagement.API.Helpers
                         options.UseQuerySplittingBehavior(QuerySplittingBehavior.SingleQuery);
                     }).ConfigureWarnings(c => c.Log((RelationalEventId.CommandExecuting, LogLevel.Debug)));
             });
+            
         }
     }
 }

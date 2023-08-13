@@ -25,10 +25,10 @@ namespace UserManagement.API.Handlers
 
             _logger.LogInformation("Forgot password request completed successfully with email: {Email}", request.Email);
 
-            await _publishEndpoint.Publish<IUserRegisteredEvent>(new
+            await _publishEndpoint.Publish<IUserForgotPasswordEvent>(new
             {
-                Username = request.Email,
-                Password = request.Email,
+                // Username = request.Email,
+                // Password = request.Email,
                 Email = request.Email
             }, cancellationToken);
 

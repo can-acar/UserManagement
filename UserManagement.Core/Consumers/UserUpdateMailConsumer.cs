@@ -2,6 +2,8 @@
 using UserManagement.Core.Commands;
 using UserManagement.Core.Interfaces;
 
+namespace UserManagement.Core.Consumers;
+
 public class UserUpdateMailConsumer : IConsumer<IUserUpdateMailSendEvent>
 {
     private readonly ILogger<UserUpdateMailConsumer> _logger;
